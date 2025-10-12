@@ -1,0 +1,1892 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESODI - Authentification</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --commission-color: #9b59b6;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 450px;
+        }
+        
+        .login-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .logo {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            background: var(--light-color);
+            padding: 15px;
+            border-radius: 50%;
+            color: var(--secondary-color);
+        }
+        
+        .subtitle {
+            color: var(--secondary-color);
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+        
+        .input-icon {
+            position: relative;
+        }
+        
+        .input-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+            font-size: 18px;
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .login-btn {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+            margin-top: 10px;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .login-btn i {
+            margin-right: 10px;
+        }
+        
+        .error-message {
+            color: var(--accent-color);
+            margin-top: 15px;
+            padding: 10px;
+            background: #ffeaea;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .dashboard {
+            display: none;
+            width: 100%;
+            max-width: 1400px;
+        }
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--accent-color);
+        }
+        
+        .dashboard-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .logout-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logout-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .commission-card {
+            background: rgba(155, 89, 182, 0.3);
+            border-left: 4px solid var(--commission-color);
+        }
+        
+        /* Main Content */
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+        }
+        
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .form-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .clients-container, .commissions-container, .agents-container {
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Form Styles */
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .input-icon {
+            position: relative;
+        }
+        
+        .input-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+            font-size: 18px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        /* Button Styles */
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .btn {
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: none;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color) 0%, #27ae60 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.4);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color) 0%, #e67e22 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3);
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(243, 156, 18, 0.4);
+        }
+        
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(23, 162, 184, 0.3);
+        }
+        
+        .btn-info:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(23, 162, 184, 0.4);
+        }
+        
+        /* Lists Styles */
+        .clients-list, .commissions-list, .agents-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .client-card, .commission-item, .agent-card {
+            background: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .commission-item {
+            border-left-color: var(--commission-color);
+        }
+        
+        .agent-card {
+            border-left-color: var(--warning-color);
+        }
+        
+        .client-name, .agent-name {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+        
+        .client-details, .commission-details, .agent-details {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .commission-amount {
+            font-weight: bold;
+            color: var(--commission-color);
+            font-size: 1.1rem;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+        
+        /* GPS Section */
+        .gps-section {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid var(--success-color);
+        }
+        
+        .gps-section h4 {
+            color: var(--success-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .gps-coordinates {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .gps-btn {
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            justify-content: center;
+        }
+        
+        .gps-btn:hover {
+            background: #27ae60;
+        }
+        
+        .gps-status {
+            margin-top: 10px;
+            font-style: italic;
+            color: #666;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        /* Commission Section */
+        .commission-section {
+            background: #f8f0ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid var(--commission-color);
+        }
+        
+        .commission-section h4 {
+            color: var(--commission-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .commission-calculator {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 10px;
+            align-items: end;
+        }
+        
+        .commission-result {
+            text-align: center;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        
+        /* Filtres Section */
+        .filters-section {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid var(--secondary-color);
+        }
+        
+        .filters-section h4 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .filters-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .print-btn {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            width: 100%;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .print-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+        }
+        
+        /* Styles pour l'impression */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-section, .print-section * {
+                visibility: visible;
+            }
+            .print-section {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                padding: 20px;
+                background: white;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+        
+        .print-section {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .print-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 20px;
+        }
+        
+        .print-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .print-table th, .print-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        .print-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .print-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        /* Tabs pour la gestion des agents */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            background: #f8f9fa;
+            border: none;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .tab.active {
+            background: white;
+            border-bottom: 2px solid var(--secondary-color);
+            color: var(--secondary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                grid-template-columns: 1fr 1fr;
+                display: grid;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .row, .filters-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                grid-template-columns: 1fr;
+            }
+            
+            .commission-calculator {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Écran de Connexion -->
+    <div class="container" id="loginContainer">
+        <div class="login-container">
+            <div class="logo">
+                <i class="fas fa-digital-tachograph"></i>
+                ESODI
+            </div>
+            <div class="subtitle">Écosystème de Solutions Digitales</div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Identifiant</label>
+                    <div class="input-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" placeholder="Votre identifiant" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <div class="input-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Votre mot de passe" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Se connecter
+                </button>
+                
+                <div class="error-message" id="errorMessage">
+                    Identifiant ou mot de passe incorrect
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Tableau de Bord après Connexion -->
+    <div class="dashboard" id="dashboard">
+        <div class="dashboard-header">
+            <div class="dashboard-title">
+                <div class="logo">
+                    <i class="fas fa-digital-tachograph"></i>
+                    ESODI
+                </div>
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="userDisplayName">Administrateur ESODI</span>
+                    <button class="logout-btn" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> Déconnexion
+                    </button>
+                </div>
+            </div>
+            <div class="subtitle">Tableau de Bord Multi-Agents - Gestion des Clients et Commissions</div>
+            
+            <div class="stats">
+                <div class="stat-card">
+                    <div>Agents Actifs</div>
+                    <div class="stat-value" id="totalAgents">0</div>
+                </div>
+                <div class="stat-card">
+                    <div>Clients Totaux</div>
+                    <div class="stat-value" id="totalClients">0</div>
+                </div>
+                <div class="stat-card">
+                    <div>Commission Totale</div>
+                    <div class="stat-value" id="totalCommission">0 FCFA</div>
+                </div>
+                <div class="stat-card commission-card">
+                    <div>Commission Ce Mois</div>
+                    <div class="stat-value" id="monthlyCommission">0 FCFA</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="dashboard-content">
+            <!-- Formulaire Principal avec Onglets -->
+            <div class="form-container">
+                <div class="tabs">
+                    <button class="tab active" data-tab="client-tab">Nouveau Client</button>
+                    <button class="tab" data-tab="agent-tab">Gestion Agents</button>
+                </div>
+                
+                <!-- Onglet Nouveau Client -->
+                <div class="tab-content active" id="client-tab">
+                    <h2 class="section-title">
+                        <i class="fas fa-user-plus"></i>
+                        Enregistrement Client & Service
+                    </h2>
+                    
+                    <form id="clientForm">
+                        <!-- Section Sélection Agent -->
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-user-tie"></i>
+                                Sélection de l'Agent
+                            </h3>
+                            
+                            <div class="form-group">
+                                <label for="agentSelect">
+                                    <i class="fas fa-users"></i>
+                                    Agent Responsable
+                                </label>
+                                <div class="input-icon">
+                                    <i class="fas fa-user-tie"></i>
+                                    <select id="agentSelect" required>
+                                        <option value="">Sélectionnez un agent</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Section Informations Client -->
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-users"></i>
+                                Informations Client
+                            </h3>
+                            
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="clientNom">
+                                        <i class="fas fa-signature"></i>
+                                        Nom Client
+                                    </label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-user"></i>
+                                        <input type="text" id="clientNom" required placeholder="Nom du client">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="clientPrenom">
+                                        <i class="fas fa-signature"></i>
+                                        Prénom Client
+                                    </label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-user"></i>
+                                        <input type="text" id="clientPrenom" required placeholder="Prénom du client">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="clientWhatsApp">
+                                        <i class="fab fa-whatsapp"></i>
+                                        WhatsApp Client
+                                    </label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-phone"></i>
+                                        <input type="text" id="clientWhatsApp" required placeholder="+229 XX XX XX XX">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="clientEmail">
+                                        <i class="fas fa-envelope"></i>
+                                        Email Client
+                                    </label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-at"></i>
+                                        <input type="email" id="clientEmail" placeholder="client@exemple.com">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="clientEtablissement">
+                                    <i class="fas fa-building"></i>
+                                    Établissement/Société
+                                </label>
+                                <div class="input-icon">
+                                    <i class="fas fa-landmark"></i>
+                                    <input type="text" id="clientEtablissement" required placeholder="Nom de l'établissement">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="clientAdresse">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Adresse de l'établissement
+                                </label>
+                                <div class="input-icon">
+                                    <i class="fas fa-location-dot"></i>
+                                    <textarea id="clientAdresse" rows="2" placeholder="Adresse complète de l'établissement"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Section Service et Commission -->
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-cogs"></i>
+                                Service & Commission
+                            </h3>
+                            
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="serviceType">
+                                        <i class="fas fa-cogs"></i>
+                                        Type de Service
+                                    </label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-tools"></i>
+                                        <select id="serviceType" required>
+                                            <option value="">Sélectionnez un service</option>
+                                            <option value="Site Web">Site Web</option>
+                                            <option value="Application Mobile">Application Mobile</option>
+                                            <option value="Marketing Digital">Marketing Digital</option>
+                                            <option value="Formation">Formation Digitale</option>
+                                            <option value="Conseil">Conseil IT</option>
+                                            <option value="Solution ERP">Solution ERP</option>
+                                            <option value="Maintenance">Maintenance</option>
+                                            <option value="Autre">Autre</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="servicePrix">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                        Prix du Service (FCFA)
+                                    </label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-dollar-sign"></i>
+                                        <input type="number" id="servicePrix" required placeholder="Prix en FCFA" min="0">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="serviceDescription">
+                                    <i class="fas fa-file-alt"></i>
+                                    Description du Service
+                                </label>
+                                <div class="input-icon">
+                                    <i class="fas fa-edit"></i>
+                                    <textarea id="serviceDescription" rows="3" required placeholder="Décrivez en détail le service offert"></textarea>
+                                </div>
+                            </div>
+                            
+                            <!-- Calculateur de Commission -->
+                            <div class="commission-section">
+                                <h4><i class="fas fa-calculator"></i> Calculateur de Commission</h4>
+                                <div class="commission-calculator">
+                                    <div>
+                                        <label for="montantService">Montant du Service (FCFA)</label>
+                                        <div class="input-icon">
+                                            <i class="fas fa-money-bill"></i>
+                                            <input type="number" id="montantService" placeholder="Entrez le montant">
+                                        </div>
+                                    </div>
+                                    <div class="commission-result">
+                                        <div>Commission (10%)</div>
+                                        <div class="commission-amount" id="commissionResult">0 FCFA</div>
+                                    </div>
+                                </div>
+                                <button type="button" class="gps-btn" id="calculerCommissionBtn">
+                                    <i class="fas fa-calculator"></i> Calculer la Commission
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Section Géolocalisation -->
+                        <div class="gps-section">
+                            <h4><i class="fas fa-map-location-dot"></i> Localisation GPS de l'établissement</h4>
+                            
+                            <div class="gps-coordinates">
+                                <div class="form-group">
+                                    <label for="latitude">Latitude</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-globe"></i>
+                                        <input type="text" id="latitude" placeholder="Ex: 6.372130" value="6.372130">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="longitude">Longitude</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-globe"></i>
+                                        <input type="text" id="longitude" placeholder="Ex: 2.391230" value="2.391230">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button type="button" class="gps-btn" id="getLocationBtn">
+                                <i class="fas fa-satellite"></i> Obtenir la position actuelle
+                            </button>
+                            
+                            <div class="gps-status" id="gpsStatus">
+                                Vous pouvez aussi saisir manuellement les coordonnées GPS
+                            </div>
+                        </div>
+                        
+                        <!-- Boutons d'action -->
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Enregistrer Client
+                            </button>
+                            
+                            <button type="button" class="btn btn-success" id="newClientBtn">
+                                <i class="fas fa-plus"></i> Nouveau Client
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Onglet Gestion Agents -->
+                <div class="tab-content" id="agent-tab">
+                    <h2 class="section-title">
+                        <i class="fas fa-user-tie"></i>
+                        Gestion des Agents
+                    </h2>
+                    
+                    <form id="agentForm">
+                        <div class="form-section">
+                            <h3 class="section-title">
+                                <i class="fas fa-user-plus"></i>
+                                Nouvel Agent
+                            </h3>
+                            
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="newAgentNom">
+                                        <i class="fas fa-signature"></i>
+                                        Nom Complet
+                                    </label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-user"></i>
+                                        <input type="text" id="newAgentNom" required placeholder="Nom complet de l'agent">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newAgentId">
+                                        <i class="fas fa-id-card"></i>
+                                        ID Agent
+                                    </label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-fingerprint"></i>
+                                        <input type="text" id="newAgentId" required placeholder="ESODI-AG-XXX">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="newAgentWhatsApp">
+                                        <i class="fab fa-whatsapp"></i>
+                                        WhatsApp
+                                    </label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-phone"></i>
+                                        <input type="text" id="newAgentWhatsApp" required placeholder="+229 XX XX XX XX">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="newAgentEmail">
+                                        <i class="fas fa-envelope"></i>
+                                        Email
+                                    </label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-at"></i>
+                                        <input type="email" id="newAgentEmail" placeholder="agent@esodi.bj">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="btn-group">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-user-plus"></i> Ajouter l'Agent
+                                </button>
+                                
+                                <button type="button" class="btn btn-info" id="resetAgentForm">
+                                    <i class="fas fa-sync"></i> Nouvel Agent
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Section Filtres et Impression -->
+                <div class="filters-section">
+                    <h4><i class="fas fa-filter"></i> Filtres et Rapports</h4>
+                    
+                    <div class="filters-row">
+                        <div class="form-group">
+                            <label for="filterAgent">Filtrer par Agent</label>
+                            <select id="filterAgent" class="filter-select">
+                                <option value="all">Tous les agents</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="filterMonth">Filtrer par Mois</label>
+                            <select id="filterMonth" class="filter-select">
+                                <option value="all">Tous les mois</option>
+                                <option value="0">Janvier</option>
+                                <option value="1">Février</option>
+                                <option value="2">Mars</option>
+                                <option value="3">Avril</option>
+                                <option value="4">Mai</option>
+                                <option value="5">Juin</option>
+                                <option value="6">Juillet</option>
+                                <option value="7">Août</option>
+                                <option value="8">Septembre</option>
+                                <option value="9">Octobre</option>
+                                <option value="10">Novembre</option>
+                                <option value="11">Décembre</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button type="button" class="print-btn" id="printReportBtn">
+                        <i class="fas fa-print"></i> Imprimer le Rapport
+                    </button>
+                </div>
+                
+                <!-- Section d'impression (cachée) -->
+                <div class="print-section" id="printSection">
+                    <div class="print-header">
+                        <h2>Rapport ESODI - Clients et Commissions</h2>
+                        <p>Généré le: <span id="printDate"></span></p>
+                        <p>Agent: <span id="printAgent"></span></p>
+                        <p>Période: <span id="printPeriod"></span></p>
+                    </div>
+                    
+                    <h3>Liste des Clients</h3>
+                    <table class="print-table" id="printClientsTable">
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Établissement</th>
+                                <th>Service</th>
+                                <th>Montant</th>
+                                <th>Commission</th>
+                                <th>Date</th>
+                                <th>Agent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Les données seront insérées ici par JavaScript -->
+                        </tbody>
+                    </table>
+                    
+                    <h3>Résumé des Commissions par Agent</h3>
+                    <table class="print-table" id="printCommissionsTable">
+                        <thead>
+                            <tr>
+                                <th>Agent</th>
+                                <th>Nombre de Clients</th>
+                                <th>Total Commission</th>
+                                <th>Commission Moyenne</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Les données seront insérées ici par JavaScript -->
+                        </tbody>
+                    </table>
+                    
+                    <div class="no-print" style="text-align: center; margin-top: 30px;">
+                        <button class="btn btn-warning" onclick="window.print()">
+                            <i class="fas fa-print"></i> Imprimer
+                        </button>
+                        <button class="btn btn-primary" onclick="closePrintSection()">
+                            <i class="fas fa-times"></i> Fermer
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Liste des Agents -->
+                <div class="agents-container">
+                    <h2 class="section-title">
+                        <i class="fas fa-user-tie"></i>
+                        Agents Actifs
+                    </h2>
+                    
+                    <div class="agents-list" id="agentsList">
+                        <div class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <p>Aucun agent enregistré</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Liste des Clients -->
+                <div class="clients-container">
+                    <h2 class="section-title">
+                        <i class="fas fa-users"></i>
+                        Clients Récents
+                    </h2>
+                    
+                    <div class="clients-list" id="clientsList">
+                        <div class="empty-state">
+                            <i class="fas fa-user-friends"></i>
+                            <p>Aucun client enregistré</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Liste des Commissions -->
+                <div class="commissions-container">
+                    <h2 class="section-title">
+                        <i class="fas fa-money-bill-wave"></i>
+                        Commissions
+                    </h2>
+                    
+                    <div class="commissions-list" id="commissionsList">
+                        <div class="empty-state">
+                            <i class="fas fa-calculator"></i>
+                            <p>Aucune commission enregistrée</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Identifiants de connexion
+        const LOGIN_CREDENTIALS = {
+            username: "KOLA",
+            password: "KOLA1@"
+        };
+        
+        // Stockage des données
+        let agents = JSON.parse(localStorage.getItem('esodi_agents')) || [
+            {
+                id: "ESODI-AG-001",
+                nom: "Koffi Mensah",
+                whatsapp: "+229 67 45 32 10",
+                email: "k.mensah@esodi.bj",
+                dateCreation: new Date().toISOString(),
+                statut: "actif"
+            },
+            {
+                id: "ESODI-AG-002", 
+                nom: "Aïcha Bello",
+                whatsapp: "+229 61 23 45 67",
+                email: "a.bello@esodi.bj",
+                dateCreation: new Date().toISOString(),
+                statut: "actif"
+            }
+        ];
+        
+        let clients = JSON.parse(localStorage.getItem('esodi_clients')) || [];
+        let commissions = JSON.parse(localStorage.getItem('esodi_commissions')) || [];
+        
+        // Éléments DOM
+        const loginContainer = document.getElementById('loginContainer');
+        const dashboard = document.getElementById('dashboard');
+        const loginForm = document.getElementById('loginForm');
+        const errorMessage = document.getElementById('errorMessage');
+        const userDisplayName = document.getElementById('userDisplayName');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const clientForm = document.getElementById('clientForm');
+        const agentForm = document.getElementById('agentForm');
+        const clientsList = document.getElementById('clientsList');
+        const agentsList = document.getElementById('agentsList');
+        const commissionsList = document.getElementById('commissionsList');
+        const totalAgents = document.getElementById('totalAgents');
+        const totalClients = document.getElementById('totalClients');
+        const totalCommission = document.getElementById('totalCommission');
+        const monthlyCommission = document.getElementById('monthlyCommission');
+        const getLocationBtn = document.getElementById('getLocationBtn');
+        const gpsStatus = document.getElementById('gpsStatus');
+        const latitudeInput = document.getElementById('latitude');
+        const longitudeInput = document.getElementById('longitude');
+        const newClientBtn = document.getElementById('newClientBtn');
+        const calculerCommissionBtn = document.getElementById('calculerCommissionBtn');
+        const commissionResult = document.getElementById('commissionResult');
+        const montantService = document.getElementById('montantService');
+        const agentSelect = document.getElementById('agentSelect');
+        const filterAgent = document.getElementById('filterAgent');
+        const filterMonth = document.getElementById('filterMonth');
+        const printReportBtn = document.getElementById('printReportBtn');
+        const printSection = document.getElementById('printSection');
+        const resetAgentForm = document.getElementById('resetAgentForm');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Vérifier si l'utilisateur est déjà connecté
+        const currentUser = localStorage.getItem('esodi_authenticated');
+        if (currentUser) {
+            showDashboard();
+        }
+        
+        // Gérer la connexion
+        loginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Vérifier les identifiants
+            if (username === LOGIN_CREDENTIALS.username && password === LOGIN_CREDENTIALS.password) {
+                // Connexion réussie
+                localStorage.setItem('esodi_authenticated', 'true');
+                showDashboard();
+            } else {
+                // Échec de connexion
+                errorMessage.style.display = 'block';
+            }
+        });
+        
+        // Gérer la déconnexion
+        logoutBtn.addEventListener('click', function() {
+            localStorage.removeItem('esodi_authenticated');
+            showLogin();
+        });
+        
+        // Gérer les onglets
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // Désactiver tous les onglets
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(tc => tc.classList.remove('active'));
+                
+                // Activer l'onglet courant
+                this.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Afficher le tableau de bord
+        function showDashboard() {
+            loginContainer.style.display = 'none';
+            dashboard.style.display = 'block';
+            
+            // Initialiser les données
+            initializeDashboard();
+        }
+        
+        // Afficher l'écran de connexion
+        function showLogin() {
+            dashboard.style.display = 'none';
+            loginContainer.style.display = 'block';
+            loginForm.reset();
+            errorMessage.style.display = 'none';
+        }
+        
+        // Initialiser le tableau de bord
+        function initializeDashboard() {
+            userDisplayName.textContent = "Administrateur ESODI";
+            
+            // Définir la date du jour
+            const now = new Date();
+            
+            // Mettre à jour les affichages
+            updateAgentsSelect();
+            updateAgentsList();
+            updateClientsDisplay();
+            updateCommissionsDisplay();
+            updateStats();
+            
+            // Configuration de la sauvegarde automatique
+            setupAutoSave();
+            
+            // Charger la sauvegarde automatique
+            loadAutoSave();
+        }
+        
+        // Mettre à jour la liste des agents dans les selects
+        function updateAgentsSelect() {
+            agentSelect.innerHTML = '<option value="">Sélectionnez un agent</option>';
+            filterAgent.innerHTML = '<option value="all">Tous les agents</option>';
+            
+            agents.forEach(agent => {
+                if (agent.statut === 'actif') {
+                    const option1 = document.createElement('option');
+                    option1.value = agent.id;
+                    option1.textContent = `${agent.nom} (${agent.id})`;
+                    agentSelect.appendChild(option1);
+                    
+                    const option2 = document.createElement('option');
+                    option2.value = agent.id;
+                    option2.textContent = `${agent.nom} (${agent.id})`;
+                    filterAgent.appendChild(option2);
+                }
+            });
+        }
+        
+        // Mettre à jour la liste des agents
+        function updateAgentsList() {
+            if (agents.length > 0) {
+                agentsList.innerHTML = '';
+                
+                agents.forEach(agent => {
+                    const agentClients = clients.filter(client => client.agentId === agent.id).length;
+                    const agentCommissions = commissions.filter(commission => commission.agentId === agent.id)
+                        .reduce((sum, comm) => sum + comm.commission, 0);
+                    
+                    const agentCard = document.createElement('div');
+                    agentCard.className = 'agent-card';
+                    agentCard.innerHTML = `
+                        <div class="agent-name">${agent.nom}</div>
+                        <div class="agent-details">
+                            <div><strong>ID:</strong> ${agent.id}</div>
+                            <div><strong>WhatsApp:</strong> ${agent.whatsapp}</div>
+                            <div><strong>Email:</strong> ${agent.email || 'Non renseigné'}</div>
+                            <div><strong>Clients:</strong> ${agentClients}</div>
+                            <div><strong>Commission Totale:</strong> ${agentCommissions.toLocaleString('fr-FR')} FCFA</div>
+                            <div><strong>Statut:</strong> <span style="color: ${agent.statut === 'actif' ? 'green' : 'red'}">${agent.statut}</span></div>
+                        </div>
+                    `;
+                    
+                    agentsList.appendChild(agentCard);
+                });
+            } else {
+                agentsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-users"></i>
+                        <p>Aucun agent enregistré</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Gérer la géolocalisation
+        getLocationBtn.addEventListener('click', function() {
+            if (!navigator.geolocation) {
+                gpsStatus.innerHTML = '<i class="fas fa-exclamation-triangle"></i> La géolocalisation n\'est pas supportée';
+                return;
+            }
+            
+            gpsStatus.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Localisation en cours...';
+            getLocationBtn.disabled = true;
+            
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    latitudeInput.value = lat.toFixed(6);
+                    longitudeInput.value = lng.toFixed(6);
+                    
+                    gpsStatus.innerHTML = '<i class="fas fa-check-circle"></i> Position obtenue avec succès!';
+                    getLocationBtn.disabled = false;
+                    
+                    // Sauvegarder automatiquement
+                    autoSaveForm();
+                },
+                function(error) {
+                    let message = '';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            message = 'Localisation refusée par l\'utilisateur';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            message = 'Information de localisation indisponible';
+                            break;
+                        case error.TIMEOUT:
+                            message = 'La demande de localisation a expiré';
+                            break;
+                        default:
+                            message = 'Une erreur inconnue est survenue';
+                    }
+                    gpsStatus.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${message}`;
+                    getLocationBtn.disabled = false;
+                }
+            );
+        });
+        
+        // Calculer la commission
+        calculerCommissionBtn.addEventListener('click', function() {
+            const montant = parseFloat(montantService.value) || 0;
+            const commission = montant * 0.10; // 10% de commission
+            commissionResult.textContent = `${commission.toLocaleString('fr-FR')} FCFA`;
+            
+            // Mettre à jour le prix du service si vide
+            if (!document.getElementById('servicePrix').value) {
+                document.getElementById('servicePrix').value = montant;
+            }
+        });
+        
+        // Nouveau client
+        newClientBtn.addEventListener('click', function() {
+            clientForm.reset();
+            latitudeInput.value = '6.372130';
+            longitudeInput.value = '2.391230';
+            gpsStatus.innerHTML = 'Vous pouvez aussi saisir manuellement les coordonnées GPS';
+            commissionResult.textContent = '0 FCFA';
+        });
+        
+        // Réinitialiser le formulaire agent
+        resetAgentForm.addEventListener('click', function() {
+            agentForm.reset();
+        });
+        
+        // Gérer l'enregistrement d'un nouveau client
+        clientForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveClient();
+        });
+        
+        // Gérer l'enregistrement d'un nouvel agent
+        agentForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            saveAgent();
+        });
+        
+        // Gérer les filtres
+        filterAgent.addEventListener('change', updateClientsDisplay);
+        filterMonth.addEventListener('change', updateClientsDisplay);
+        
+        // Gérer l'impression
+        printReportBtn.addEventListener('click', generatePrintReport);
+        
+        // Fonction pour sauvegarder un agent
+        function saveAgent() {
+            const agent = {
+                id: document.getElementById('newAgentId').value,
+                nom: document.getElementById('newAgentNom').value,
+                whatsapp: document.getElementById('newAgentWhatsApp').value,
+                email: document.getElementById('newAgentEmail').value,
+                dateCreation: new Date().toISOString(),
+                statut: 'actif'
+            };
+            
+            // Vérifier si l'ID existe déjà
+            const existingAgent = agents.find(a => a.id === agent.id);
+            if (existingAgent) {
+                alert('Un agent avec cet ID existe déjà!');
+                return;
+            }
+            
+            agents.push(agent);
+            localStorage.setItem('esodi_agents', JSON.stringify(agents));
+            
+            // Mettre à jour les affichages
+            updateAgentsSelect();
+            updateAgentsList();
+            updateStats();
+            
+            // Réinitialiser le formulaire
+            agentForm.reset();
+            
+            // Afficher un message de confirmation
+            alert(`Agent ${agent.nom} enregistré avec succès!`);
+        }
+        
+        // Fonction pour sauvegarder un client
+        function saveClient() {
+            const selectedAgentId = agentSelect.value;
+            const selectedAgent = agents.find(agent => agent.id === selectedAgentId);
+            
+            if (!selectedAgent) {
+                alert('Veuillez sélectionner un agent valide!');
+                return;
+            }
+            
+            const client = {
+                id: Date.now(),
+                // Informations agent
+                agentId: selectedAgentId,
+                agentNom: selectedAgent.nom,
+                // Informations client
+                client: {
+                    nom: document.getElementById('clientNom').value,
+                    prenom: document.getElementById('clientPrenom').value,
+                    whatsapp: document.getElementById('clientWhatsApp').value,
+                    email: document.getElementById('clientEmail').value,
+                    etablissement: document.getElementById('clientEtablissement').value,
+                    adresse: document.getElementById('clientAdresse').value
+                },
+                // Service
+                service: {
+                    type: document.getElementById('serviceType').value,
+                    prix: parseFloat(document.getElementById('servicePrix').value),
+                    description: document.getElementById('serviceDescription').value,
+                    commission: parseFloat(document.getElementById('servicePrix').value) * 0.10
+                },
+                // Localisation
+                localisation: {
+                    latitude: latitudeInput.value,
+                    longitude: longitudeInput.value
+                },
+                // Métadonnées
+                dateEnregistrement: new Date().toISOString(),
+                statut: 'actif'
+            };
+            
+            clients.push(client);
+            localStorage.setItem('esodi_clients', JSON.stringify(clients));
+            
+            // Enregistrer la commission
+            const commission = {
+                id: Date.now(),
+                clientId: client.id,
+                agentId: selectedAgentId,
+                clientNom: `${client.client.prenom} ${client.client.nom}`,
+                serviceType: client.service.type,
+                montantService: client.service.prix,
+                commission: client.service.commission,
+                date: client.dateEnregistrement,
+                agent: selectedAgent.nom
+            };
+            
+            commissions.push(commission);
+            localStorage.setItem('esodi_commissions', JSON.stringify(commissions));
+            
+            // Mettre à jour les affichages
+            updateClientsDisplay();
+            updateCommissionsDisplay();
+            updateStats();
+            
+            // Réinitialiser le formulaire
+            newClientBtn.click();
+            
+            // Afficher un message de confirmation
+            alert(`Client ${client.client.prenom} ${client.client.nom} enregistré avec succès!\nCommission: ${client.service.commission.toLocaleString('fr-FR')} FCFA\nAgent: ${selectedAgent.nom}`);
+        }
+        
+        // Mettre à jour l'affichage des clients
+        function updateClientsDisplay() {
+            let filteredClients = [...clients];
+            
+            // Appliquer les filtres
+            const selectedAgent = filterAgent.value;
+            const selectedMonth = filterMonth.value;
+            
+            if (selectedAgent !== 'all') {
+                filteredClients = filteredClients.filter(client => client.agentId === selectedAgent);
+            }
+            
+            if (selectedMonth !== 'all') {
+                filteredClients = filteredClients.filter(client => {
+                    const clientDate = new Date(client.dateEnregistrement);
+                    return clientDate.getMonth() === parseInt(selectedMonth);
+                });
+            }
+            
+            // Trier par date (du plus récent au plus ancien)
+            filteredClients.sort((a, b) => new Date(b.dateEnregistrement) - new Date(a.dateEnregistrement));
+            
+            // Afficher les clients
+            if (filteredClients.length > 0) {
+                clientsList.innerHTML = '';
+                
+                filteredClients.slice(0, 5).forEach(client => {
+                    const clientDate = new Date(client.dateEnregistrement);
+                    const formattedDate = clientDate.toLocaleDateString('fr-FR');
+                    
+                    const clientCard = document.createElement('div');
+                    clientCard.className = 'client-card';
+                    clientCard.innerHTML = `
+                        <div class="client-name">${client.client.prenom} ${client.client.nom}</div>
+                        <div class="client-details">
+                            <div><strong>Établissement:</strong> ${client.client.etablissement}</div>
+                            <div><strong>Service:</strong> ${client.service.type}</div>
+                            <div><strong>Montant:</strong> ${client.service.prix.toLocaleString('fr-FR')} FCFA</div>
+                            <div><strong>Commission:</strong> ${client.service.commission.toLocaleString('fr-FR')} FCFA</div>
+                            <div><strong>GPS:</strong> ${client.localisation.latitude}, ${client.localisation.longitude}</div>
+                            <div><strong>Date:</strong> ${formattedDate}</div>
+                            <div><strong>Agent:</strong> ${client.agentNom}</div>
+                        </div>
+                    `;
+                    
+                    clientsList.appendChild(clientCard);
+                });
+            } else {
+                clientsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-user-friends"></i>
+                        <p>Aucun client enregistré</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Mettre à jour l'affichage des commissions
+        function updateCommissionsDisplay() {
+            if (commissions.length > 0) {
+                commissionsList.innerHTML = '';
+                
+                // Trier par date (du plus récent au plus ancien)
+                const commissionsTriees = [...commissions].sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                commissionsTriees.slice(0, 5).forEach(commission => {
+                    const commissionDate = new Date(commission.date);
+                    const formattedDate = commissionDate.toLocaleDateString('fr-FR');
+                    
+                    const commissionItem = document.createElement('div');
+                    commissionItem.className = 'commission-item';
+                    commissionItem.innerHTML = `
+                        <div class="client-name">${commission.clientNom}</div>
+                        <div class="commission-details">
+                            <div><strong>Service:</strong> ${commission.serviceType}</div>
+                            <div><strong>Montant Service:</strong> ${commission.montantService.toLocaleString('fr-FR')} FCFA</div>
+                            <div class="commission-amount">Commission: ${commission.commission.toLocaleString('fr-FR')} FCFA</div>
+                            <div><strong>Date:</strong> ${formattedDate}</div>
+                            <div><strong>Agent:</strong> ${commission.agent}</div>
+                        </div>
+                    `;
+                    
+                    commissionsList.appendChild(commissionItem);
+                });
+            } else {
+                commissionsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-calculator"></i>
+                        <p>Aucune commission enregistrée</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Mettre à jour les statistiques
+        function updateStats() {
+            // Total agents
+            totalAgents.textContent = agents.filter(agent => agent.statut === 'actif').length;
+            
+            // Total clients
+            totalClients.textContent = clients.length;
+            
+            // Total commission
+            const totalComm = commissions.reduce((sum, commission) => sum + commission.commission, 0);
+            totalCommission.textContent = `${totalComm.toLocaleString('fr-FR')} FCFA`;
+            
+            // Commission ce mois
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            const monthlyComm = commissions.reduce((sum, commission) => {
+                const commissionDate = new Date(commission.date);
+                if (commissionDate.getMonth() === currentMonth && commissionDate.getFullYear() === currentYear) {
+                    return sum + commission.commission;
+                }
+                return sum;
+            }, 0);
+            
+            monthlyCommission.textContent = `${monthlyComm.toLocaleString('fr-FR')} FCFA`;
+        }
+        
+        // Générer le rapport d'impression
+        function generatePrintReport() {
+            const selectedAgent = filterAgent.value;
+            const selectedMonth = filterMonth.value;
+            
+            // Filtrer les données
+            let filteredClients = [...clients];
+            let filteredCommissions = [...commissions];
+            
+            if (selectedAgent !== 'all') {
+                filteredClients = filteredClients.filter(client => client.agentId === selectedAgent);
+                filteredCommissions = filteredCommissions.filter(commission => commission.agentId === selectedAgent);
+            }
+            
+            if (selectedMonth !== 'all') {
+                filteredClients = filteredClients.filter(client => {
+                    const clientDate = new Date(client.dateEnregistrement);
+                    return clientDate.getMonth() === parseInt(selectedMonth);
+                });
+                filteredCommissions = filteredCommissions.filter(commission => {
+                    const commissionDate = new Date(commission.date);
+                    return commissionDate.getMonth() === parseInt(selectedMonth);
+                });
+            }
+            
+            // Mettre à jour l'en-tête d'impression
+            document.getElementById('printDate').textContent = new Date().toLocaleDateString('fr-FR');
+            
+            const selectedAgentObj = agents.find(agent => agent.id === selectedAgent);
+            document.getElementById('printAgent').textContent = selectedAgent === 'all' ? 'Tous les agents' : (selectedAgentObj ? selectedAgentObj.nom : 'Agent inconnu');
+            
+            const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+            document.getElementById('printPeriod').textContent = selectedMonth === 'all' ? 'Tous les mois' : monthNames[parseInt(selectedMonth)];
+            
+            // Remplir le tableau des clients
+            const clientsTable = document.getElementById('printClientsTable').getElementsByTagName('tbody')[0];
+            clientsTable.innerHTML = '';
+            
+            filteredClients.forEach(client => {
+                const row = clientsTable.insertRow();
+                row.insertCell(0).textContent = `${client.client.prenom} ${client.client.nom}`;
+                row.insertCell(1).textContent = client.client.etablissement;
+                row.insertCell(2).textContent = client.service.type;
+                row.insertCell(3).textContent = `${client.service.prix.toLocaleString('fr-FR')} FCFA`;
+                row.insertCell(4).textContent = `${client.service.commission.toLocaleString('fr-FR')} FCFA`;
+                row.insertCell(5).textContent = new Date(client.dateEnregistrement).toLocaleDateString('fr-FR');
+                row.insertCell(6).textContent = client.agentNom;
+            });
+            
+            // Remplir le tableau des commissions par agent
+            const commissionsTable = document.getElementById('printCommissionsTable').getElementsByTagName('tbody')[0];
+            commissionsTable.innerHTML = '';
+            
+            const agentsSummary = {};
+            filteredClients.forEach(client => {
+                const agentName = client.agentNom;
+                if (!agentsSummary[agentName]) {
+                    agentsSummary[agentName] = {
+                        count: 0,
+                        totalCommission: 0
+                    };
+                }
+                agentsSummary[agentName].count++;
+                agentsSummary[agentName].totalCommission += client.service.commission;
+            });
+            
+            Object.keys(agentsSummary).forEach(agent => {
+                const row = commissionsTable.insertRow();
+                const summary = agentsSummary[agent];
+                const avgCommission = summary.totalCommission / summary.count;
+                
+                row.insertCell(0).textContent = agent;
+                row.insertCell(1).textContent = summary.count;
+                row.insertCell(2).textContent = `${summary.totalCommission.toLocaleString('fr-FR')} FCFA`;
+                row.insertCell(3).textContent = `${avgCommission.toLocaleString('fr-FR')} FCFA`;
+            });
+            
+            // Afficher la section d'impression
+            printSection.style.display = 'block';
+        }
+        
+        // Fermer la section d'impression
+        function closePrintSection() {
+            printSection.style.display = 'none';
+        }
+        
+        // Configuration de la sauvegarde automatique
+        function setupAutoSave() {
+            // Sauvegarder automatiquement toutes les 30 secondes
+            setInterval(autoSaveForm, 30000);
+            
+            // Sauvegarder lors de la modification des champs
+            const inputs = clientForm.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.addEventListener('input', autoSaveForm);
+            });
+        }
+        
+        // Fonction de sauvegarde automatique
+        function autoSaveForm() {
+            const formData = {
+                agentSelect: document.getElementById('agentSelect').value,
+                clientNom: document.getElementById('clientNom').value,
+                clientPrenom: document.getElementById('clientPrenom').value,
+                clientWhatsApp: document.getElementById('clientWhatsApp').value,
+                clientEmail: document.getElementById('clientEmail').value,
+                clientEtablissement: document.getElementById('clientEtablissement').value,
+                clientAdresse: document.getElementById('clientAdresse').value,
+                serviceType: document.getElementById('serviceType').value,
+                servicePrix: document.getElementById('servicePrix').value,
+                serviceDescription: document.getElementById('serviceDescription').value,
+                latitude: latitudeInput.value,
+                longitude: longitudeInput.value,
+                lastSave: new Date().toISOString()
+            };
+            
+            localStorage.setItem('esodi_auto_save', JSON.stringify(formData));
+        }
+        
+        // Charger la sauvegarde automatique au démarrage
+        function loadAutoSave() {
+            const savedData = localStorage.getItem('esodi_auto_save');
+            if (savedData) {
+                const formData = JSON.parse(savedData);
+                Object.keys(formData).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        element.value = formData[key];
+                    }
+                });
+                
+                // Calculer la commission si le prix est défini
+                if (formData.servicePrix) {
+                    montantService.value = formData.servicePrix;
+                    calculerCommissionBtn.click();
+                }
+            }
+        }
+        
+        // Sauvegarder les données initiales
+        localStorage.setItem('esodi_agents', JSON.stringify(agents));
+    </script>
+</body>
+</html>

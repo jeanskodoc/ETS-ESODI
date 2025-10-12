@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription Agent Commercial - ESODI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px 0;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--accent-color);
+        }
+        
+        .logo {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 50%;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+        
+        .form-container {
+            background-color: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        .form-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            border-radius: 15px 15px 0 0;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .input-icon {
+            position: relative;
+        }
+        
+        .input-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+            font-size: 18px;
+        }
+        
+        .input-icon input, 
+        .input-icon select, 
+        .input-icon textarea {
+            padding-left: 45px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 -10px;
+        }
+        
+        .col {
+            flex: 1;
+            padding: 0 10px;
+            min-width: 200px;
+        }
+        
+        .file-input {
+            padding: 12px;
+            background-color: var(--light-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px dashed #ddd;
+        }
+        
+        .file-input:hover {
+            background-color: #e0e7f1;
+        }
+        
+        .file-input input {
+            display: none;
+        }
+        
+        .file-input label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            margin: 0;
+            justify-content: center;
+            padding: 5px;
+        }
+        
+        .file-input i {
+            margin-right: 10px;
+            color: var(--secondary-color);
+            font-size: 20px;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, var(--secondary-color) 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            padding: 18px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+        
+        .submit-btn i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        .required:after {
+            content: " *";
+            color: var(--accent-color);
+        }
+        
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .form-section-title {
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-section-title i {
+            background: var(--light-color);
+            padding: 10px;
+            border-radius: 50%;
+            color: var(--secondary-color);
+        }
+        
+        .info-text {
+            background: #e8f4fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .info-text i {
+            color: var(--secondary-color);
+            font-size: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .col {
+                flex: 100%;
+                margin-bottom: 15px;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+            
+            .logo {
+                font-size: 2.5rem;
+            }
+        }
+        
+        .success-message {
+            display: none;
+            background: var(--success-color);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 20px;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-digital-tachograph"></i>
+                ESODI
+            </div>
+            <div class="subtitle">Écosystème de Solutions Digitales</div>
+            <h1>Formulaire d'inscription Agent Commercial</h1>
+        </header>
+        
+        <div class="form-container">
+            <div class="info-text">
+                <i class="fas fa-info-circle"></i>
+                <div>Veuillez remplir tous les champs obligatoires (*) pour soumettre votre candidature.</div>
+            </div>
+            
+            <form id="inscriptionForm">
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-user"></i>
+                        Informations personnelles
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="nom" class="required">
+                                    <i class="fas fa-signature"></i>
+                                    Nom
+                                </label>
+                                <div class="input-icon">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" id="nom" name="nom" required placeholder="Votre nom">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="prenom" class="required">
+                                    <i class="fas fa-signature"></i>
+                                    Prénom
+                                </label>
+                                <div class="input-icon">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" id="prenom" name="prenom" required placeholder="Votre prénom">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profession" class="required">
+                            <i class="fas fa-briefcase"></i>
+                            Profession actuelle
+                        </label>
+                        <div class="input-icon">
+                            <i class="fas fa-briefcase"></i>
+                            <input type="text" id="profession" name="profession" required placeholder="Votre profession actuelle">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-graduation-cap"></i>
+                        Formation et éducation
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="niveau_etudes" class="required">
+                            <i class="fas fa-user-graduate"></i>
+                            Niveau d'études
+                        </label>
+                        <div class="input-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                            <select id="niveau_etudes" name="niveau_etudes" required>
+                                <option value="">Sélectionnez votre niveau</option>
+                                <option value="Bac">Baccalauréat</option>
+                                <option value="Bac+2">Bac+2 (DEUG, BTS, DUT)</option>
+                                <option value="Bac+3">Bac+3 (Licence, Bachelor)</option>
+                                <option value="Bac+5">Bac+5 (Master, MBA)</option>
+                                <option value="Doctorat">Doctorat</option>
+                                <option value="Autre">Autre</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="diplome" class="required">
+                            <i class="fas fa-scroll"></i>
+                            Dernier diplôme obtenu
+                        </label>
+                        <div class="input-icon">
+                            <i class="fas fa-certificate"></i>
+                            <input type="text" id="diplome" name="diplome" required placeholder="Votre dernier diplôme">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-id-card"></i>
+                        Carte d'identité nationale
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cin" class="required">
+                            <i class="fas fa-id-card"></i>
+                            Numéro de carte d'identité nationale
+                        </label>
+                        <div class="input-icon">
+                            <i class="fas fa-address-card"></i>
+                            <input type="text" id="cin" name="cin" required placeholder="Numéro de votre CIN">
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="fait_le" class="required">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Fait le
+                                </label>
+                                <div class="input-icon">
+                                    <i class="fas fa-calendar-plus"></i>
+                                    <input type="date" id="fait_le" name="fait_le" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="expire_le" class="required">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    Expire le
+                                </label>
+                                <div class="input-icon">
+                                    <i class="fas fa-calendar-minus"></i>
+                                    <input type="date" id="expire_le" name="expire_le" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="cin_recto" class="required">
+                                    <i class="fas fa-id-card"></i>
+                                    Image de la carte d'identité (recto)
+                                </label>
+                                <div class="file-input">
+                                    <input type="file" id="cin_recto" name="cin_recto" accept="image/*" required>
+                                    <label for="cin_recto">
+                                        <i class="fas fa-upload"></i>
+                                        <span id="recto-text">Choisir une image</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="cin_verso" class="required">
+                                    <i class="fas fa-id-card"></i>
+                                    Image de la carte d'identité (verso)
+                                </label>
+                                <div class="file-input">
+                                    <input type="file" id="cin_verso" name="cin_verso" accept="image/*" required>
+                                    <label for="cin_verso">
+                                        <i class="fas fa-upload"></i>
+                                        <span id="verso-text">Choisir une image</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-address-book"></i>
+                        Coordonnées
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="whatsapp" class="required">
+                            <i class="fab fa-whatsapp"></i>
+                            Numéro WhatsApp
+                        </label>
+                        <div class="input-icon">
+                            <i class="fab fa-whatsapp"></i>
+                            <input type="tel" id="whatsapp" name="whatsapp" placeholder="Ex: +229 XX XX XX XX" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email" class="required">
+                            <i class="fas fa-envelope"></i>
+                            Adresse e-mail
+                        </label>
+                        <div class="input-icon">
+                            <i class="fas fa-at"></i>
+                            <input type="email" id="email" name="email" required placeholder="votre@email.com">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="personne_prevenir" class="required">
+                            <i class="fas fa-user-friends"></i>
+                            Personne à prévenir (nom et téléphone)
+                        </label>
+                        <div class="input-icon">
+                            <i class="fas fa-user-plus"></i>
+                            <textarea id="personne_prevenir" name="personne_prevenir" rows="3" required placeholder="Nom et numéro de téléphone de la personne à prévenir"></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-question-circle"></i>
+                        Comment nous avez-vous connu ?
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="decouverte" class="required">
+                            <i class="fas fa-search"></i>
+                            Comment avez-vous découvert ESODI?
+                        </label>
+                        <div class="input-icon">
+                            <i class="fas fa-bullhorn"></i>
+                            <select id="decouverte" name="decouverte" required>
+                                <option value="">Sélectionnez une option</option>
+                                <option value="Reseaux sociaux">Réseaux sociaux</option>
+                                <option value="Ami ou connaissance">Ami ou connaissance</option>
+                                <option value="Publicité">Publicité</option>
+                                <option value="Evenement">Événement</option>
+                                <option value="Site web">Site web</option>
+                                <option value="Autre">Autre</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <input type="hidden" id="date_inscription" name="date_inscription">
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fab fa-whatsapp"></i> Envoyer par WhatsApp
+                </button>
+                
+                <div class="success-message" id="successMessage">
+                    <i class="fas fa-check-circle"></i> Votre formulaire a été préparé avec succès! Vous allez être redirigé vers WhatsApp.
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Définir automatiquement la date d'inscription
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const formattedDate = now.toISOString().split('T')[0];
+            document.getElementById('date_inscription').value = formattedDate;
+        });
+        
+        // Gérer l'affichage des noms de fichiers
+        document.getElementById('cin_recto').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : 'Choisir une image';
+            document.getElementById('recto-text').textContent = fileName;
+        });
+        
+        document.getElementById('cin_verso').addEventListener('change', function(e) {
+            const fileName = e.target.files[0] ? e.target.files[0].name : 'Choisir une image';
+            document.getElementById('verso-text').textContent = fileName;
+        });
+        
+        // Gérer l'envoi du formulaire
+        document.getElementById('inscriptionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validation simple
+            let isValid = true;
+            const requiredFields = document.querySelectorAll('input[required], select[required], textarea[required]');
+            
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    isValid = false;
+                    field.style.borderColor = 'var(--accent-color)';
+                } else {
+                    field.style.borderColor = '#ddd';
+                }
+            });
+            
+            if (!isValid) {
+                alert('Veuillez remplir tous les champs obligatoires.');
+                return;
+            }
+            
+            // Récupérer les données du formulaire
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Construire le message WhatsApp
+            let message = `Nouvelle inscription Agent Commercial ESODI%0A%0A`;
+            message += `*Nom:* ${data.nom}%0A`;
+            message += `*Prénom:* ${data.prenom}%0A`;
+            message += `*Profession actuelle:* ${data.profession}%0A`;
+            message += `*Niveau d'études:* ${data.niveau_etudes}%0A`;
+            message += `*Dernier diplôme obtenu:* ${data.diplome}%0A`;
+            message += `*Numéro CIN:* ${data.cin}%0A`;
+            message += `*CIN fait le:* ${data.fait_le}%0A`;
+            message += `*CIN expire le:* ${data.expire_le}%0A`;
+            message += `*WhatsApp:* ${data.whatsapp}%0A`;
+            message += `*Email:* ${data.email}%0A`;
+            message += `*Personne à prévenir:* ${data.personne_prevenir}%0A`;
+            message += `*Découverte ESODI:* ${data.decouverte}%0A`;
+            message += `*Date d'inscription:* ${data.date_inscription}%0A%0A`;
+            message += `*IMPORTANT:* Les images de la CIN doivent être envoyées séparément.`;
+            
+            // Afficher le message de succès
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Ouvrir WhatsApp avec le message pré-rempli après un court délai
+            setTimeout(() => {
+                const whatsappUrl = `https://wa.me/92871605?text=${message}`;
+                window.open(whatsappUrl, '_blank');
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
