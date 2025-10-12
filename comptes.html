@@ -580,6 +580,30 @@
             display: none;
             z-index: 1000;
         }
+
+        .demo-credentials {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #666;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            display: none; /* Masqué par défaut */
+        }
+
+        .show-credentials {
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .show-credentials:hover {
+            color: var(--primary-color);
+        }
     </style>
 </head>
 <body>
@@ -628,7 +652,12 @@
                 </button>
             </form>
             
-            <div style="margin-top: 20px; font-size: 0.9rem; color: #666; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+            <!-- Section des identifiants masquée par défaut -->
+            <button class="show-credentials" id="showCredentialsBtn">
+                <i class="fas fa-info-circle"></i> Afficher les identifiants de démonstration
+            </button>
+            
+            <div class="demo-credentials" id="demoCredentials">
                 <p style="margin-bottom: 10px; font-weight: bold;">Identifiants de démonstration :</p>
                 <p><strong>Identifiant:</strong> KOLA</p>
                 <p><strong>Mot de passe:</strong> KOLA1@</p>
@@ -971,6 +1000,8 @@
         const sessionTimer = document.getElementById('sessionTimer');
         const timerText = document.getElementById('timerText');
         const currentUser = document.getElementById('currentUser');
+        const showCredentialsBtn = document.getElementById('showCredentialsBtn');
+        const demoCredentials = document.getElementById('demoCredentials');
         
         // Identifiants valides (en production, cela devrait être côté serveur)
         const validCredentials = {
@@ -998,6 +1029,17 @@
             }
         });
 
+        // Afficher/masquer les identifiants de démonstration
+        showCredentialsBtn.addEventListener('click', function() {
+            if (demoCredentials.style.display === 'none' || demoCredentials.style.display === '') {
+                demoCredentials.style.display = 'block';
+                this.innerHTML = '<i class="fas fa-eye-slash"></i> Masquer les identifiants de démonstration';
+            } else {
+                demoCredentials.style.display = 'none';
+                this.innerHTML = '<i class="fas fa-info-circle"></i> Afficher les identifiants de démonstration';
+            }
+        });
+
         // Vérifier si l'utilisateur est déjà connecté
         function checkAuthentication() {
             const authData = JSON.parse(localStorage.getItem('esodi_auth_data'));
@@ -1019,6 +1061,8 @@
             mainApp.style.display = 'none';
             sessionTimer.style.display = 'none';
             clearInterval(sessionInterval);
+            // Masquer les identifiants de démonstration au chargement
+            demoCredentials.style.display = 'none';
         }
         
         // Afficher l'application principale
@@ -1115,6 +1159,9 @@
             localStorage.removeItem('esodi_auth_data');
             showLoginPage();
             loginForm.reset();
+            // Masquer les identifiants de démonstration lors de la déconnexion
+            demoCredentials.style.display = 'none';
+            showCredentialsBtn.innerHTML = '<i class="fas fa-info-circle"></i> Afficher les identifiants de démonstration';
         }
         
         logoutBtn.addEventListener('click', logout);
