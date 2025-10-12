@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Comptes Agents - ESODI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --commission-color: #9b59b6;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --gradient-danger: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            --shadow-light: 0 5px 15px rgba(0, 0, 0, 0.05);
+            --shadow-medium: 0 10px 25px rgba(0, 0, 0, 0.1);
+            --shadow-heavy: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: var(--shadow-medium);
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--accent-color);
+        }
+        
+        .logo {
+            font-size: 2.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .logo i {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 50%;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: var(--shadow-light);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-medium);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-color);
+        }
+        
+        .card-title {
+            font-size: 1.4rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .input-icon {
+            position: relative;
+        }
+        
+        .input-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-color);
+            font-size: 18px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--secondary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .btn {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-success {
+            background: var(--gradient-success);
+            color: white;
+            box-shadow: 0 4px 10px rgba(79, 172, 254, 0.3);
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(79, 172, 254, 0.4);
+        }
+        
+        .btn-danger {
+            background: var(--gradient-danger);
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(243, 156, 18, 0.3);
+        }
+        
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(243, 156, 18, 0.4);
+        }
+        
+        .btn-block {
+            width: 100%;
+        }
+        
+        .accounts-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .account-item {
+            background: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--secondary-color);
+            transition: transform 0.2s;
+        }
+        
+        .account-item.inactive {
+            border-left-color: var(--accent-color);
+            opacity: 0.8;
+        }
+        
+        .account-item:hover {
+            transform: translateX(5px);
+        }
+        
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .account-name {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+        
+        .account-status {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background: rgba(46, 204, 113, 0.2);
+            color: var(--success-color);
+        }
+        
+        .status-inactive {
+            background: rgba(231, 76, 60, 0.2);
+            color: var(--accent-color);
+        }
+        
+        .account-details {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .credentials {
+            background: rgba(52, 152, 219, 0.1);
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-family: monospace;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #ddd;
+        }
+        
+        .auto-save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: var(--shadow-medium);
+            display: none;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-card {
+            background: var(--light-color);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 10px 0;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .notification {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .notification-success {
+            background: rgba(46, 204, 113, 0.1);
+            border-left: 4px solid var(--success-color);
+            color: #27ae60;
+        }
+        
+        .notification-error {
+            background: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid var(--accent-color);
+            color: #c0392b;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn-sm {
+            padding: 8px 15px;
+            font-size: 0.9rem;
+        }
+        
+        .search-box {
+            margin-bottom: 20px;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            background: #f8f9fa;
+            border: none;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .tab.active {
+            background: white;
+            border-bottom: 2px solid var(--secondary-color);
+            color: var(--secondary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .bulk-actions {
+            background: rgba(231, 76, 60, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .bulk-actions-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+            font-weight: 600;
+        }
+        
+        .inactive-count {
+            background: var(--accent-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-digital-tachograph"></i>
+                ESODI
+            </div>
+            <div class="subtitle">Gestion des Comptes Agents - Génération Automatique</div>
+        </header>
+        
+        <div class="dashboard">
+            <!-- Formulaire de création de compte -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-user-plus"></i>
+                        Créer un Compte Agent
+                    </h2>
+                </div>
+                
+                <div id="notificationArea"></div>
+                
+                <form id="accountForm">
+                    <div class="form-group">
+                        <label for="agentName">
+                            <i class="fas fa-user"></i>
+                            Nom complet de l'agent
+                        </label>
+                        <div class="input-icon">
+                            <i class="fas fa-signature"></i>
+                            <input type="text" id="agentName" required placeholder="Nom et prénom de l'agent">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="agentEmail">
+                            <i class="fas fa-envelope"></i>
+                            Adresse email
+                        </label>
+                        <div class="input-icon">
+                            <i class="fas fa-at"></i>
+                            <input type="email" id="agentEmail" required placeholder="agent@esodi.tg">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="agentPhone">
+                            <i class="fas fa-phone"></i>
+                            Téléphone
+                        </label>
+                        <div class="input-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                            <input type="tel" id="agentPhone" required placeholder="+228 XX XX XX XX">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="agentRegion">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Région d'affectation
+                        </label>
+                        <div class="input-icon">
+                            <i class="fas fa-globe-africa"></i>
+                            <select id="agentRegion" required>
+                                <option value="">Sélectionnez une région</option>
+                                <option value="Maritime">Région Maritime</option>
+                                <option value="Plateaux">Région des Plateaux</option>
+                                <option value="Centrale">Région Centrale</option>
+                                <option value="Kara">Région de la Kara</option>
+                                <option value="Savanes">Région des Savanes</option>
+                                <option value="Grand-Lomé">Grand-Lomé</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="agentType">
+                            <i class="fas fa-user-tag"></i>
+                            Type d'agent
+                        </label>
+                        <div class="input-icon">
+                            <i class="fas fa-tags"></i>
+                            <select id="agentType" required>
+                                <option value="">Sélectionnez un type</option>
+                                <option value="Commercial">Commercial</option>
+                                <option value="Senior">Commercial Senior</option>
+                                <option value="Superviseur">Superviseur</option>
+                                <option value="Manager">Manager Régional</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-key"></i>
+                            Identifiants générés automatiquement
+                        </label>
+                        <div class="credentials" id="generatedCredentials">
+                            Les identifiants seront générés après validation du formulaire
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <i class="fas fa-user-plus"></i> Générer le Compte Agent
+                    </button>
+                    
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-success btn-sm" id="saveDraftBtn">
+                            <i class="fas fa-save"></i> Sauvegarder le brouillon
+                        </button>
+                        <button type="button" class="btn btn-sm" id="loadDraftBtn">
+                            <i class="fas fa-folder-open"></i> Charger le brouillon
+                        </button>
+                        <button type="reset" class="btn btn-sm" id="resetFormBtn">
+                            <i class="fas fa-undo"></i> Nouveau formulaire
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Liste des comptes existants -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">
+                        <i class="fas fa-users"></i>
+                        Comptes Agents Existants
+                    </h2>
+                    <span class="badge" id="accountsCount">0</span>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Agents Actifs</div>
+                        <div class="stat-value" id="activeAgents">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Agents Inactifs</div>
+                        <div class="stat-value" id="inactiveAgents">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Comptes</div>
+                        <div class="stat-value" id="totalAgents">0</div>
+                    </div>
+                </div>
+                
+                <!-- Actions groupées pour les comptes inactifs -->
+                <div class="bulk-actions" id="bulkActions" style="display: none;">
+                    <div class="bulk-actions-header">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Gestion des comptes inactifs</span>
+                        <span class="inactive-count" id="inactiveCount">0</span>
+                    </div>
+                    <p style="margin-bottom: 10px; font-size: 0.9rem;">
+                        <strong>Attention:</strong> Ces actions sont irréversibles. Les comptes supprimés ne pourront pas être récupérés.
+                    </p>
+                    <div class="action-buttons">
+                        <button class="btn btn-danger btn-sm" id="deleteAllInactiveBtn">
+                            <i class="fas fa-trash"></i> Supprimer TOUS les comptes inactifs
+                        </button>
+                        <button class="btn btn-warning btn-sm" id="deleteOldInactiveBtn">
+                            <i class="fas fa-clock"></i> Supprimer les inactifs de plus de 30 jours
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="search-box">
+                    <div class="input-icon">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchAccounts" placeholder="Rechercher un agent...">
+                    </div>
+                </div>
+                
+                <div class="accounts-list" id="accountsList">
+                    <div class="empty-state">
+                        <i class="fas fa-user-friends"></i>
+                        <p>Aucun compte agent créé</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section détaillée des comptes -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-cogs"></i>
+                    Gestion Avancée des Comptes
+                </h2>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab active" data-tab="export-tab">Export des Données</button>
+                <button class="tab" data-tab="settings-tab">Paramètres</button>
+                <button class="tab" data-tab="cleanup-tab">Nettoyage</button>
+            </div>
+            
+            <div class="tab-content active" id="export-tab">
+                <div class="form-group">
+                    <label>Exporter les données des agents</label>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" id="exportJSONBtn">
+                            <i class="fas fa-file-code"></i> Exporter en JSON
+                        </button>
+                        <button class="btn btn-success" id="exportCSVBtn">
+                            <i class="fas fa-file-csv"></i> Exporter en CSV
+                        </button>
+                        <button class="btn" id="printAccountsBtn">
+                            <i class="fas fa-print"></i> Imprimer la liste
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="tab-content" id="settings-tab">
+                <div class="form-group">
+                    <label for="autoSaveInterval">
+                        <i class="fas fa-clock"></i>
+                        Intervalle de sauvegarde automatique (minutes)
+                    </label>
+                    <div class="input-icon">
+                        <i class="fas fa-history"></i>
+                        <input type="number" id="autoSaveInterval" min="1" max="60" value="5">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="usernamePattern">
+                        <i class="fas fa-id-card"></i>
+                        Modèle de génération d'identifiant
+                    </label>
+                    <div class="input-icon">
+                        <i class="fas fa-code"></i>
+                        <select id="usernamePattern">
+                            <option value="nom.prenom">nom.prenom</option>
+                            <option value="prenom.nom">prenom.nom</option>
+                            <option value="esodi.sequence">esodi.sequence</option>
+                            <option value="region.prenom">region.prenom</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-primary" id="saveSettingsBtn">
+                    <i class="fas fa-save"></i> Sauvegarder les paramètres
+                </button>
+            </div>
+            
+            <div class="tab-content" id="cleanup-tab">
+                <div class="bulk-actions">
+                    <div class="bulk-actions-header">
+                        <i class="fas fa-broom"></i>
+                        <span>Nettoyage des comptes inactifs</span>
+                    </div>
+                    <p style="margin-bottom: 15px;">
+                        Cette section vous permet de gérer les comptes agents inactifs de manière sécurisée.
+                        Les actions de suppression sont définitives.
+                    </p>
+                    
+                    <div class="form-group">
+                        <label for="inactiveDaysThreshold">
+                            <i class="fas fa-calendar-times"></i>
+                            Seuil d'inactivité (jours)
+                        </label>
+                        <div class="input-icon">
+                            <i class="fas fa-clock"></i>
+                            <input type="number" id="inactiveDaysThreshold" min="1" value="30">
+                        </div>
+                        <small style="color: #666;">
+                            Nombre de jours sans connexion pour considérer un compte comme "ancien inactif"
+                        </small>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="btn btn-danger" id="cleanupAllInactiveBtn">
+                            <i class="fas fa-trash-alt"></i> Supprimer tous les comptes inactifs
+                        </button>
+                        <button class="btn btn-warning" id="cleanupOldInactiveBtn">
+                            <i class="fas fa-hourglass-end"></i> Supprimer les anciens comptes inactifs
+                        </button>
+                        <button class="btn btn-primary" id="analyzeInactiveBtn">
+                            <i class="fas fa-chart-bar"></i> Analyser les comptes inactifs
+                        </button>
+                    </div>
+                    
+                    <div id="cleanupAnalysis" style="margin-top: 20px; display: none;">
+                        <h4 style="margin-bottom: 10px;">Analyse des comptes inactifs</h4>
+                        <div id="analysisResults"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Indicateur de sauvegarde automatique -->
+        <div class="auto-save-indicator" id="autoSaveIndicator">
+            <i class="fas fa-check-circle"></i>
+            <span>Sauvegarde automatique effectuée</span>
+        </div>
+    </div>
+
+    <script>
+        // Stockage des données
+        let agents = JSON.parse(localStorage.getItem('esodi_agents_accounts')) || [];
+        let settings = JSON.parse(localStorage.getItem('esodi_accounts_settings')) || {
+            autoSaveInterval: 5,
+            usernamePattern: 'nom.prenom',
+            inactiveDaysThreshold: 30
+        };
+        
+        // Éléments DOM
+        const accountForm = document.getElementById('accountForm');
+        const accountsList = document.getElementById('accountsList');
+        const accountsCount = document.getElementById('accountsCount');
+        const activeAgents = document.getElementById('activeAgents');
+        const inactiveAgents = document.getElementById('inactiveAgents');
+        const totalAgents = document.getElementById('totalAgents');
+        const generatedCredentials = document.getElementById('generatedCredentials');
+        const notificationArea = document.getElementById('notificationArea');
+        const autoSaveIndicator = document.getElementById('autoSaveIndicator');
+        const searchAccounts = document.getElementById('searchAccounts');
+        const saveDraftBtn = document.getElementById('saveDraftBtn');
+        const loadDraftBtn = document.getElementById('loadDraftBtn');
+        const resetFormBtn = document.getElementById('resetFormBtn');
+        const exportJSONBtn = document.getElementById('exportJSONBtn');
+        const exportCSVBtn = document.getElementById('exportCSVBtn');
+        const printAccountsBtn = document.getElementById('printAccountsBtn');
+        const autoSaveInterval = document.getElementById('autoSaveInterval');
+        const usernamePattern = document.getElementById('usernamePattern');
+        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+        const deleteAllInactiveBtn = document.getElementById('deleteAllInactiveBtn');
+        const deleteOldInactiveBtn = document.getElementById('deleteOldInactiveBtn');
+        const bulkActions = document.getElementById('bulkActions');
+        const inactiveCount = document.getElementById('inactiveCount');
+        const cleanupAllInactiveBtn = document.getElementById('cleanupAllInactiveBtn');
+        const cleanupOldInactiveBtn = document.getElementById('cleanupOldInactiveBtn');
+        const analyzeInactiveBtn = document.getElementById('analyzeInactiveBtn');
+        const inactiveDaysThreshold = document.getElementById('inactiveDaysThreshold');
+        const cleanupAnalysis = document.getElementById('cleanupAnalysis');
+        const analysisResults = document.getElementById('analysisResults');
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            updateAccountsDisplay();
+            updateStats();
+            startAutoSave();
+            updateBulkActions();
+            
+            // Afficher le dernier brouillon s'il existe
+            const draft = localStorage.getItem('esodi_account_draft');
+            if (draft) {
+                loadDraftBtn.style.display = 'block';
+            }
+        });
+        
+        // Gérer les onglets
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabId = this.getAttribute('data-tab');
+                
+                // Désactiver tous les onglets
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(tc => tc.classList.remove('active'));
+                
+                // Activer l'onglet courant
+                this.classList.add('active');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+        
+        // Générer un compte agent
+        accountForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            createAgentAccount();
+        });
+        
+        // Sauvegarder le brouillon
+        saveDraftBtn.addEventListener('click', function() {
+            saveDraft();
+            showNotification('Brouillon sauvegardé avec succès!', 'success');
+        });
+        
+        // Charger le brouillon
+        loadDraftBtn.addEventListener('click', function() {
+            loadDraft();
+        });
+        
+        // Réinitialiser le formulaire
+        resetFormBtn.addEventListener('click', function() {
+            accountForm.reset();
+            generatedCredentials.textContent = 'Les identifiants seront générés après validation du formulaire';
+            localStorage.removeItem('esodi_account_draft');
+            loadDraftBtn.style.display = 'none';
+        });
+        
+        // Recherche d'agents
+        searchAccounts.addEventListener('input', function() {
+            updateAccountsDisplay(this.value);
+        });
+        
+        // Export des données
+        exportJSONBtn.addEventListener('click', exportToJSON);
+        exportCSVBtn.addEventListener('click', exportToCSV);
+        printAccountsBtn.addEventListener('click', printAccounts);
+        
+        // Sauvegarder les paramètres
+        saveSettingsBtn.addEventListener('click', saveSettings);
+        
+        // Gestion des comptes inactifs
+        deleteAllInactiveBtn.addEventListener('click', deleteAllInactiveAgents);
+        deleteOldInactiveBtn.addEventListener('click', deleteOldInactiveAgents);
+        cleanupAllInactiveBtn.addEventListener('click', deleteAllInactiveAgents);
+        cleanupOldInactiveBtn.addEventListener('click', deleteOldInactiveAgents);
+        analyzeInactiveBtn.addEventListener('click', analyzeInactiveAgents);
+        
+        // Fonction pour créer un compte agent
+        function createAgentAccount() {
+            const agentName = document.getElementById('agentName').value;
+            const agentEmail = document.getElementById('agentEmail').value;
+            const agentPhone = document.getElementById('agentPhone').value;
+            const agentRegion = document.getElementById('agentRegion').value;
+            const agentType = document.getElementById('agentType').value;
+            
+            // Générer les identifiants
+            const credentials = generateCredentials(agentName, agentEmail);
+            
+            const agent = {
+                id: 'ESODI-' + Date.now(),
+                name: agentName,
+                email: agentEmail,
+                phone: agentPhone,
+                region: agentRegion,
+                type: agentType,
+                username: credentials.username,
+                password: credentials.password,
+                status: 'active',
+                dateCreated: new Date().toISOString(),
+                lastLogin: null
+            };
+            
+            agents.push(agent);
+            localStorage.setItem('esodi_agents_accounts', JSON.stringify(agents));
+            
+            // Mettre à jour l'affichage
+            updateAccountsDisplay();
+            updateStats();
+            updateBulkActions();
+            
+            // Afficher les identifiants
+            generatedCredentials.innerHTML = `
+                <strong>Identifiant:</strong> ${agent.username}<br>
+                <strong>Mot de passe:</strong> ${agent.password}<br>
+                <small>Ces identifiants ont été envoyés par email à ${agentEmail}</small>
+            `;
+            
+            // Afficher une notification
+            showNotification(`Compte créé avec succès pour ${agentName}!`, 'success');
+            
+            // Réinitialiser le formulaire après un délai
+            setTimeout(() => {
+                accountForm.reset();
+                generatedCredentials.textContent = 'Les identifiants seront générés après validation du formulaire';
+                localStorage.removeItem('esodi_account_draft');
+                loadDraftBtn.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Générer les identifiants automatiquement
+        function generateCredentials(name, email) {
+            const names = name.toLowerCase().split(' ');
+            const firstName = names[0] || '';
+            const lastName = names[names.length - 1] || '';
+            
+            let username = '';
+            const pattern = settings.usernamePattern;
+            
+            switch(pattern) {
+                case 'nom.prenom':
+                    username = `${lastName}.${firstName}`;
+                    break;
+                case 'prenom.nom':
+                    username = `${firstName}.${lastName}`;
+                    break;
+                case 'esodi.sequence':
+                    username = `esodi.agent${agents.length + 1}`;
+                    break;
+                case 'region.prenom':
+                    const region = document.getElementById('agentRegion').value.toLowerCase();
+                    username = `${region}.${firstName}`;
+                    break;
+                default:
+                    username = `${firstName}.${lastName}`;
+            }
+            
+            // Nettoyer le username (enlever les accents et caractères spéciaux)
+            username = username
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/[^a-z0-9.]/g, '')
+                .substring(0, 20);
+            
+            // Générer un mot de passe aléatoire
+            const password = generatePassword();
+            
+            return { username, password };
+        }
+        
+        // Générer un mot de passe sécurisé
+        function generatePassword() {
+            const length = 8;
+            const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let password = "";
+            
+            // Assurer au moins un chiffre et une majuscule
+            password += charset.charAt(Math.floor(Math.random() * 26) + 26); // Majuscule
+            password += charset.charAt(Math.floor(Math.random() * 10) + 52); // Chiffre
+            
+            // Remplir le reste
+            for (let i = 2; i < length; i++) {
+                password += charset.charAt(Math.floor(Math.random() * charset.length));
+            }
+            
+            // Mélanger le mot de passe
+            return password.split('').sort(() => 0.5 - Math.random()).join('');
+        }
+        
+        // Mettre à jour l'affichage des comptes
+        function updateAccountsDisplay(searchTerm = '') {
+            let filteredAgents = [...agents];
+            
+            if (searchTerm) {
+                filteredAgents = agents.filter(agent => 
+                    agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    agent.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    agent.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    agent.region.toLowerCase().includes(searchTerm.toLowerCase())
+                );
+            }
+            
+            if (filteredAgents.length > 0) {
+                accountsList.innerHTML = '';
+                
+                filteredAgents.forEach(agent => {
+                    const accountItem = document.createElement('div');
+                    accountItem.className = `account-item ${agent.status === 'inactive' ? 'inactive' : ''}`;
+                    
+                    const createdDate = new Date(agent.dateCreated).toLocaleDateString('fr-FR');
+                    const statusClass = agent.status === 'active' ? 'status-active' : 'status-inactive';
+                    
+                    accountItem.innerHTML = `
+                        <div class="account-header">
+                            <div class="account-name">${agent.name}</div>
+                            <div class="account-status ${statusClass}">${agent.status === 'active' ? 'Actif' : 'Inactif'}</div>
+                        </div>
+                        <div class="account-details">
+                            <div><strong>Email:</strong> ${agent.email}</div>
+                            <div><strong>Téléphone:</strong> ${agent.phone}</div>
+                            <div><strong>Région:</strong> ${agent.region}</div>
+                            <div><strong>Type:</strong> ${agent.type}</div>
+                            <div class="credentials">
+                                <strong>Identifiant:</strong> ${agent.username} | 
+                                <strong>Mot de passe:</strong> ${agent.password}
+                            </div>
+                            <div><strong>Créé le:</strong> ${createdDate}</div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-sm" onclick="toggleAgentStatus('${agent.id}')">
+                                <i class="fas fa-power-off"></i> ${agent.status === 'active' ? 'Désactiver' : 'Activer'}
+                            </button>
+                            <button class="btn btn-sm" onclick="resetAgentPassword('${agent.id}')">
+                                <i class="fas fa-key"></i> Réinitialiser MDP
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteAgentAccount('${agent.id}')">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </button>
+                        </div>
+                    `;
+                    
+                    accountsList.appendChild(accountItem);
+                });
+            } else {
+                accountsList.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-user-friends"></i>
+                        <p>${searchTerm ? 'Aucun agent trouvé' : 'Aucun compte agent créé'}</p>
+                    </div>
+                `;
+            }
+            
+            accountsCount.textContent = filteredAgents.length;
+        }
+        
+        // Mettre à jour les statistiques
+        function updateStats() {
+            const activeCount = agents.filter(agent => agent.status === 'active').length;
+            const inactiveCount = agents.filter(agent => agent.status === 'inactive').length;
+            const totalCount = agents.length;
+            
+            activeAgents.textContent = activeCount;
+            inactiveAgents.textContent = inactiveCount;
+            totalAgents.textContent = totalCount;
+        }
+        
+        // Mettre à jour les actions groupées
+        function updateBulkActions() {
+            const inactiveAgentsCount = agents.filter(agent => agent.status === 'inactive').length;
+            
+            if (inactiveAgentsCount > 0) {
+                bulkActions.style.display = 'block';
+                inactiveCount.textContent = inactiveAgentsCount;
+            } else {
+                bulkActions.style.display = 'none';
+            }
+        }
+        
+        // Supprimer tous les comptes inactifs
+        function deleteAllInactiveAgents() {
+            const inactiveAgents = agents.filter(agent => agent.status === 'inactive');
+            
+            if (inactiveAgents.length === 0) {
+                showNotification('Aucun compte inactif à supprimer.', 'error');
+                return;
+            }
+            
+            const agentNames = inactiveAgents.map(agent => agent.name).join(', ');
+            
+            if (confirm(`Êtes-vous sûr de vouloir supprimer ${inactiveAgents.length} compte(s) inactif(s) ?\n\nAgents concernés: ${agentNames}`)) {
+                // Garder seulement les comptes actifs
+                agents = agents.filter(agent => agent.status === 'active');
+                localStorage.setItem('esodi_agents_accounts', JSON.stringify(agents));
+                
+                // Mettre à jour l'affichage
+                updateAccountsDisplay();
+                updateStats();
+                updateBulkActions();
+                
+                showNotification(`${inactiveAgents.length} compte(s) inactif(s) supprimé(s) avec succès!`, 'success');
+            }
+        }
+        
+        // Supprimer les anciens comptes inactifs
+        function deleteOldInactiveAgents() {
+            const threshold = parseInt(inactiveDaysThreshold.value) || 30;
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - threshold);
+            
+            const oldInactiveAgents = agents.filter(agent => {
+                if (agent.status !== 'inactive') return false;
+                
+                const createdDate = new Date(agent.dateCreated);
+                return createdDate < cutoffDate;
+            });
+            
+            if (oldInactiveAgents.length === 0) {
+                showNotification(`Aucun compte inactif de plus de ${threshold} jours à supprimer.`, 'error');
+                return;
+            }
+            
+            const agentNames = oldInactiveAgents.map(agent => agent.name).join(', ');
+            
+            if (confirm(`Êtes-vous sûr de vouloir supprimer ${oldInactiveAgents.length} compte(s) inactif(s) de plus de ${threshold} jours ?\n\nAgents concernés: ${agentNames}`)) {
+                // Supprimer les anciens comptes inactifs
+                agents = agents.filter(agent => {
+                    if (agent.status !== 'inactive') return true;
+                    
+                    const createdDate = new Date(agent.dateCreated);
+                    return createdDate >= cutoffDate;
+                });
+                
+                localStorage.setItem('esodi_agents_accounts', JSON.stringify(agents));
+                
+                // Mettre à jour l'affichage
+                updateAccountsDisplay();
+                updateStats();
+                updateBulkActions();
+                
+                showNotification(`${oldInactiveAgents.length} compte(s) inactif(s) anciens supprimé(s) avec succès!`, 'success');
+            }
+        }
+        
+        // Analyser les comptes inactifs
+        function analyzeInactiveAgents() {
+            const threshold = parseInt(inactiveDaysThreshold.value) || 30;
+            const cutoffDate = new Date();
+            cutoffDate.setDate(cutoffDate.getDate() - threshold);
+            
+            const inactiveAgents = agents.filter(agent => agent.status === 'inactive');
+            const oldInactiveAgents = inactiveAgents.filter(agent => {
+                const createdDate = new Date(agent.dateCreated);
+                return createdDate < cutoffDate;
+            });
+            
+            cleanupAnalysis.style.display = 'block';
+            analysisResults.innerHTML = `
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Inactifs</div>
+                        <div class="stat-value">${inactiveAgents.length}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Anciens Inactifs</div>
+                        <div class="stat-value">${oldInactiveAgents.length}</div>
+                    </div>
+                </div>
+                ${oldInactiveAgents.length > 0 ? `
+                    <h5>Comptes inactifs de plus de ${threshold} jours:</h5>
+                    <ul style="margin-left: 20px; color: #666;">
+                        ${oldInactiveAgents.map(agent => `
+                            <li>${agent.name} (créé le ${new Date(agent.dateCreated).toLocaleDateString('fr-FR')})</li>
+                        `).join('')}
+                    </ul>
+                ` : `
+                    <p style="color: var(--success-color);">
+                        <i class="fas fa-check-circle"></i> Aucun compte inactif ancien détecté.
+                    </p>
+                `}
+            `;
+        }
+        
+        // Sauvegarder le brouillon
+        function saveDraft() {
+            const draft = {
+                agentName: document.getElementById('agentName').value,
+                agentEmail: document.getElementById('agentEmail').value,
+                agentPhone: document.getElementById('agentPhone').value,
+                agentRegion: document.getElementById('agentRegion').value,
+                agentType: document.getElementById('agentType').value,
+                savedAt: new Date().toISOString()
+            };
+            
+            localStorage.setItem('esodi_account_draft', JSON.stringify(draft));
+            loadDraftBtn.style.display = 'block';
+        }
+        
+        // Charger le brouillon
+        function loadDraft() {
+            const draft = JSON.parse(localStorage.getItem('esodi_account_draft'));
+            
+            if (draft) {
+                document.getElementById('agentName').value = draft.agentName || '';
+                document.getElementById('agentEmail').value = draft.agentEmail || '';
+                document.getElementById('agentPhone').value = draft.agentPhone || '';
+                document.getElementById('agentRegion').value = draft.agentRegion || '';
+                document.getElementById('agentType').value = draft.agentType || '';
+                
+                showNotification('Brouillon chargé avec succès!', 'success');
+            }
+        }
+        
+        // Démarrer la sauvegarde automatique
+        function startAutoSave() {
+            setInterval(() => {
+                if (isFormFilled()) {
+                    saveDraft();
+                    showAutoSaveIndicator();
+                }
+            }, settings.autoSaveInterval * 60 * 1000);
+        }
+        
+        // Vérifier si le formulaire est rempli
+        function isFormFilled() {
+            return document.getElementById('agentName').value !== '' ||
+                   document.getElementById('agentEmail').value !== '' ||
+                   document.getElementById('agentPhone').value !== '' ||
+                   document.getElementById('agentRegion').value !== '' ||
+                   document.getElementById('agentType').value !== '';
+        }
+        
+        // Afficher l'indicateur de sauvegarde automatique
+        function showAutoSaveIndicator() {
+            autoSaveIndicator.style.display = 'flex';
+            setTimeout(() => {
+                autoSaveIndicator.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Afficher une notification
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            notificationArea.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+        
+        // Charger les paramètres
+        function loadSettings() {
+            autoSaveInterval.value = settings.autoSaveInterval;
+            usernamePattern.value = settings.usernamePattern;
+            inactiveDaysThreshold.value = settings.inactiveDaysThreshold;
+        }
+        
+        // Sauvegarder les paramètres
+        function saveSettings() {
+            settings.autoSaveInterval = parseInt(autoSaveInterval.value);
+            settings.usernamePattern = usernamePattern.value;
+            settings.inactiveDaysThreshold = parseInt(inactiveDaysThreshold.value);
+            
+            localStorage.setItem('esodi_accounts_settings', JSON.stringify(settings));
+            showNotification('Paramètres sauvegardés avec succès!', 'success');
+        }
+        
+        // Exporter en JSON
+        function exportToJSON() {
+            const dataStr = JSON.stringify(agents, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `esodi-agents-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            
+            showNotification('Export JSON effectué avec succès!', 'success');
+        }
+        
+        // Exporter en CSV
+        function exportToCSV() {
+            const headers = ['ID', 'Nom', 'Email', 'Téléphone', 'Région', 'Type', 'Username', 'Statut', 'Date création'];
+            const csvData = agents.map(agent => [
+                agent.id,
+                agent.name,
+                agent.email,
+                agent.phone,
+                agent.region,
+                agent.type,
+                agent.username,
+                agent.status,
+                new Date(agent.dateCreated).toLocaleDateString('fr-FR')
+            ]);
+            
+            let csvContent = headers.join(',') + '\n';
+            csvData.forEach(row => {
+                csvContent += row.map(field => `"${field}"`).join(',') + '\n';
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `esodi-agents-${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+            
+            showNotification('Export CSV effectué avec succès!', 'success');
+        }
+        
+        // Imprimer la liste
+        function printAccounts() {
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(`
+                <html>
+                    <head>
+                        <title>Liste des Agents ESODI - Togo</title>
+                        <style>
+                            body { font-family: Arial, sans-serif; margin: 20px; }
+                            table { width: 100%; border-collapse: collapse; }
+                            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                            th { background-color: #f2f2f2; }
+                            .inactive { background-color: #ffeaea; }
+                        </style>
+                    </head>
+                    <body>
+                        <h1>Liste des Agents ESODI - Togo</h1>
+                        <p>Généré le ${new Date().toLocaleDateString('fr-FR')}</p>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nom</th>
+                                    <th>Email</th>
+                                    <th>Téléphone</th>
+                                    <th>Région</th>
+                                    <th>Type</th>
+                                    <th>Username</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${agents.map(agent => `
+                                    <tr class="${agent.status === 'inactive' ? 'inactive' : ''}">
+                                        <td>${agent.name}</td>
+                                        <td>${agent.email}</td>
+                                        <td>${agent.phone}</td>
+                                        <td>${agent.region}</td>
+                                        <td>${agent.type}</td>
+                                        <td>${agent.username}</td>
+                                        <td>${agent.status}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </body>
+                </html>
+            `);
+            printWindow.document.close();
+            printWindow.print();
+        }
+        
+        // Fonctions globales pour les boutons d'action
+        window.toggleAgentStatus = function(agentId) {
+            const agent = agents.find(a => a.id === agentId);
+            if (agent) {
+                agent.status = agent.status === 'active' ? 'inactive' : 'active';
+                localStorage.setItem('esodi_agents_accounts', JSON.stringify(agents));
+                updateAccountsDisplay();
+                updateStats();
+                updateBulkActions();
+                
+                const action = agent.status === 'active' ? 'activé' : 'désactivé';
+                showNotification(`Statut ${action} pour ${agent.name}`, 'success');
+            }
+        };
+        
+        window.resetAgentPassword = function(agentId) {
+            const agent = agents.find(a => a.id === agentId);
+            if (agent) {
+                const newPassword = generatePassword();
+                agent.password = newPassword;
+                localStorage.setItem('esodi_agents_accounts', JSON.stringify(agents));
+                updateAccountsDisplay();
+                
+                showNotification(`Mot de passe réinitialisé pour ${agent.name}: ${newPassword}`, 'success');
+            }
+        };
+        
+        window.deleteAgentAccount = function(agentId) {
+            const agent = agents.find(a => a.id === agentId);
+            if (agent && confirm(`Êtes-vous sûr de vouloir supprimer le compte de ${agent.name} ?`)) {
+                const agentIndex = agents.findIndex(a => a.id === agentId);
+                if (agentIndex !== -1) {
+                    const agentName = agents[agentIndex].name;
+                    agents.splice(agentIndex, 1);
+                    localStorage.setItem('esodi_agents_accounts', JSON.stringify(agents));
+                    updateAccountsDisplay();
+                    updateStats();
+                    updateBulkActions();
+                    
+                    showNotification(`Compte ${agentName} supprimé avec succès`, 'success');
+                }
+            }
+        };
+    </script>
+</body>
+</html>
