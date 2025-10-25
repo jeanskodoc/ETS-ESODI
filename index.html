@@ -20,9 +20,11 @@
             --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
             --gradient-warning: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
             --gradient-accounts: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            --gradient-projects: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
             --shadow-light: 0 3px 10px rgba(0, 0, 0, 0.05);
             --shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.08);
             --shadow-heavy: 0 8px 25px rgba(0, 0, 0, 0.12);
+            --border-radius: 16px;
         }
         
         * {
@@ -54,7 +56,7 @@
             text-align: center;
             background: var(--gradient-primary);
             color: white;
-            border-radius: 0 0 20px 20px;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
             margin-bottom: 40px;
             box-shadow: var(--shadow-medium);
             overflow: hidden;
@@ -105,6 +107,35 @@
             padding: 0 10px;
         }
         
+        /* Navigation */
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0 30px;
+        }
+        
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        
         /* Apps Container - Optimisé mobile */
         .apps-container {
             display: grid;
@@ -115,7 +146,7 @@
         
         .app-card {
             background-color: white;
-            border-radius: 16px;
+            border-radius: var(--border-radius);
             overflow: hidden;
             box-shadow: var(--shadow-light);
             transition: all 0.3s ease;
@@ -323,6 +354,16 @@
             transform: translateY(-2px);
         }
         
+        .projects-btn {
+            background: var(--gradient-projects);
+            color: #333;
+        }
+        
+        .projects-btn:hover {
+            box-shadow: 0 5px 15px rgba(255, 154, 158, 0.3);
+            transform: translateY(-2px);
+        }
+        
         /* Footer - Optimisé mobile */
         footer {
             text-align: center;
@@ -331,7 +372,7 @@
             color: #777;
             background: var(--gradient-primary);
             color: white;
-            border-radius: 20px 20px 0 0;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
         }
         
         footer p {
@@ -388,6 +429,10 @@
         
         .delay-4 {
             animation-delay: 0.4s;
+        }
+        
+        .delay-5 {
+            animation-delay: 0.5s;
         }
         
         /* Responsive - Optimisations pour différentes tailles */
@@ -511,6 +556,10 @@
             .feature:hover {
                 transform: none;
             }
+            
+            .nav-button:hover {
+                transform: none;
+            }
         }
         
         /* Amélioration du contraste pour l'accessibilité */
@@ -520,7 +569,7 @@
         }
         
         /* Amélioration du focus pour navigation au clavier */
-        .app-btn:focus, .footer-links a:focus {
+        .app-btn:focus, .footer-links a:focus, .nav-button:focus {
             outline: 2px solid var(--accent-color);
             outline-offset: 2px;
         }
@@ -538,6 +587,13 @@
                 Découvrez notre suite d'applications complète pour optimiser la gestion de vos équipes commerciales, 
                 suivre vos clients et maximiser vos performances. Choisissez l'outil adapté à vos besoins.
             </p>
+            
+            <!-- Bouton Projets -->
+            <div class="nav-container fade-in-up delay-3">
+                <a href="https://jeanskodoc.github.io/ESODI/" class="nav-button">
+                    <i class="fas fa-rocket"></i> Voir nos Projets
+                </a>
+            </div>
         </header>
         
         <div class="apps-container">
@@ -658,7 +714,7 @@
                 </div>
             </div>
             
-            <!-- NOUVELLE CARTE : Gestion des Comptes Agents -->
+            <!-- Carte Gestion des Comptes Agents -->
             <div class="app-card fade-in-up delay-4">
                 <div class="app-header">
                     <div class="app-icon">
@@ -696,6 +752,45 @@
                     </a>
                 </div>
             </div>
+            
+            <!-- NOUVELLE CARTE : Projets ESODI -->
+            <div class="app-card fade-in-up delay-5">
+                <div class="app-header">
+                    <div class="app-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <div class="app-title">Projets ESODI</div>
+                    <div class="app-subtitle">Innovation et développement</div>
+                </div>
+                <div class="app-content">
+                    <p class="app-description">
+                        Découvrez l'ensemble de nos projets et réalisations en matière de solutions digitales. 
+                        Explorez nos innovations, nos applications en développement et nos solutions 
+                        technologiques conçues pour transformer votre expérience numérique.
+                    </p>
+                    <div class="app-features">
+                        <div class="feature">
+                            <i class="fas fa-lightbulb"></i>
+                            <span>Innovations technologiques</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-code"></i>
+                            <span>Applications en développement</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-paint-brush"></i>
+                            <span>Design moderne et intuitif</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>Solutions mobiles et web</span>
+                        </div>
+                    </div>
+                    <a href="https://jeanskodoc.github.io/ESODI/" class="app-btn projects-btn">
+                        <i class="fas fa-external-link-alt"></i> Explorer nos Projets
+                    </a>
+                </div>
+            </div>
         </div>
         
         <footer>
@@ -705,6 +800,7 @@
                 <a href="#"><i class="fas fa-envelope"></i> Contact</a>
                 <a href="#"><i class="fas fa-shield-alt"></i> Confidentialité</a>
                 <a href="#"><i class="fas fa-file-contract"></i> Conditions</a>
+                <a href="https://jeanskodoc.github.io/ESODI/"><i class="fas fa-rocket"></i> Projets</a>
             </div>
         </footer>
     </div>
