@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ESODI - Administration & Statistiques | Togo</title>
+    <title>ESODI - Administration Complète | Togo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
@@ -61,6 +61,7 @@
         .btn-success { background: linear-gradient(105deg, #10b981, #059669); color: white; }
         .btn-warning { background: linear-gradient(105deg, #f59e0b, #d97706); color: white; }
         .btn-danger { background: linear-gradient(105deg, #ef4444, #dc2626); color: white; }
+        .btn-danger:hover { transform: translateY(-2px); }
         .btn-info { background: linear-gradient(105deg, #06b6d4, #0891b2); color: white; }
         .error-message { color: var(--accent-color); margin-top: 0.8rem; display: none; }
         .demo-credentials { margin-top: 1rem; font-size: 0.8rem; background: #f1f5f9; padding: 0.8rem; border-radius: 0.6rem; display: none; }
@@ -75,16 +76,16 @@
         .logout-btn { background: rgba(255,255,255,0.2); border: none; padding: 0.4rem 0.8rem; border-radius: 40px; color: white; cursor: pointer; }
         
         /* Stats Grid */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-top: 1rem; }
         .stat-card { background: rgba(255,255,255,0.12); backdrop-filter: blur(4px); padding: 1rem; border-radius: 0.8rem; text-align: center; }
-        .stat-value { font-size: 1.8rem; font-weight: bold; }
+        .stat-value { font-size: 1.6rem; font-weight: bold; }
         .commission-card { background: rgba(139, 92, 246, 0.25); }
         
         /* Charts */
-        .charts-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
+        .charts-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
         .chart-card { background: white; border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow); }
         .chart-card h3 { font-size: 1rem; margin-bottom: 1rem; color: var(--primary-color); display: flex; align-items: center; gap: 0.5rem; }
-        canvas { max-height: 250px; width: 100%; }
+        canvas { max-height: 230px; width: 100%; }
         
         /* Main content */
         .dashboard-content { display: grid; grid-template-columns: 1fr 380px; gap: 1.5rem; }
@@ -94,7 +95,7 @@
         .card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--togo-green), var(--togo-yellow), var(--togo-red)); border-radius: var(--radius) var(--radius) 0 0; }
         .section-title { font-size: 1rem; font-weight: 700; color: var(--primary-color); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; }
         
-        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; }
+        .tabs { display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap; }
         .tab { padding: 0.5rem 1rem; background: none; border: none; cursor: pointer; font-weight: 600; color: #64748b; }
         .tab.active { color: var(--secondary-color); border-bottom: 2px solid var(--secondary-color); }
         .tab-content { display: none; }
@@ -109,11 +110,13 @@
         
         .lists-container { display: flex; flex-direction: column; gap: 1.5rem; }
         .list-card { background: white; border-radius: var(--radius); padding: 1rem; box-shadow: var(--shadow); }
-        .list-item { background: #f8fafc; padding: 0.8rem; border-radius: 0.6rem; margin-bottom: 0.8rem; border-left: 3px solid var(--secondary-color); }
+        .list-item { background: #f8fafc; padding: 0.8rem; border-radius: 0.6rem; margin-bottom: 0.8rem; border-left: 3px solid var(--secondary-color); position: relative; }
         .list-item.commission { border-left-color: var(--commission-color); }
         .list-item.agent { border-left-color: var(--warning-color); }
-        .item-title { font-weight: 700; margin-bottom: 0.3rem; }
+        .item-title { font-weight: 700; margin-bottom: 0.3rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
         .item-details { font-size: 0.75rem; color: #475569; }
+        .delete-btn { background: var(--danger-color); color: white; border: none; padding: 0.2rem 0.5rem; border-radius: 0.4rem; font-size: 0.7rem; cursor: pointer; transition: all 0.2s; }
+        .delete-btn:hover { background: #dc2626; transform: scale(1.02); }
         .empty-state { text-align: center; padding: 2rem; color: #94a3b8; }
         
         .filters-section { background: #eef2ff; padding: 0.8rem; border-radius: 0.8rem; margin-top: 1rem; }
@@ -124,6 +127,12 @@
         .print-table th { background: var(--primary-color); color: white; }
         
         .auto-save-indicator { position: fixed; bottom: 20px; right: 20px; background: var(--success-color); color: white; padding: 0.5rem 1rem; border-radius: 40px; font-size: 0.75rem; display: none; align-items: center; gap: 0.5rem; z-index: 1000; }
+        
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; z-index: 2000;
+        }
+        .modal-content { background: white; padding: 1.5rem; border-radius: var(--radius); max-width: 400px; text-align: center; }
+        .modal-buttons { display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: center; }
         
         @media (max-width: 560px) { .row, .filters-row, .btn-group { grid-template-columns: 1fr; } .stats-grid { grid-template-columns: 1fr; } .charts-row { grid-template-columns: 1fr; } }
     </style>
@@ -136,7 +145,7 @@
                 <div class="togo-flag-logo"><div class="flag-stripe flag-green"></div><div class="flag-stripe flag-yellow"></div><div class="flag-stripe flag-red"></div></div>
                 <span class="logo-text">ESODI</span>
             </div>
-            <div class="subtitle" style="color: var(--secondary-color); margin-bottom: 1rem;">Administration & Statistiques</div>
+            <div class="subtitle" style="color: var(--secondary-color); margin-bottom: 1rem;">Administration Complète</div>
             <div class="error-message" id="loginError">Identifiant incorrect</div>
             <form id="loginForm">
                 <div class="form-group"><label>Identifiant</label><div class="input-icon"><i class="fas fa-user"></i><input type="text" id="username" required></div></div>
@@ -145,6 +154,19 @@
             </form>
             <button class="show-credentials" id="showCredentialsBtn"><i class="fas fa-info-circle"></i> Afficher identifiants</button>
             <div class="demo-credentials" id="demoCredentials"><strong>Identifiant:</strong> KOLA<br><strong>Mot de passe:</strong> KOLA1@</div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmation -->
+    <div class="modal" id="confirmModal">
+        <div class="modal-content">
+            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: var(--danger-color); margin-bottom: 1rem;"></i>
+            <h3 id="modalTitle">Confirmation</h3>
+            <p id="modalMessage">Êtes-vous sûr de vouloir supprimer cet élément ?</p>
+            <div class="modal-buttons">
+                <button class="btn btn-danger btn-sm" id="confirmDeleteBtn">Supprimer</button>
+                <button class="btn btn-primary btn-sm" id="cancelDeleteBtn">Annuler</button>
+            </div>
         </div>
     </div>
 
@@ -158,25 +180,24 @@
                 </div>
                 <div class="user-info"><i class="fas fa-user-cog"></i> <span id="userDisplayName">Administrateur</span><button class="logout-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Déconnexion</button></div>
             </div>
-            <div class="stats-grid">
+            <div class="stats-grid" id="statsGrid">
                 <div class="stat-card"><div>👥 Agents Actifs</div><div class="stat-value" id="totalAgents">0</div></div>
                 <div class="stat-card"><div>📋 Clients Totaux</div><div class="stat-value" id="totalClients">0</div></div>
                 <div class="stat-card"><div>💰 Commission Totale</div><div class="stat-value" id="totalCommission">0 FCFA</div></div>
                 <div class="stat-card commission-card"><div>📅 Commission Ce Mois</div><div class="stat-value" id="monthlyCommission">0 FCFA</div></div>
                 <div class="stat-card"><div>⭐ Commission Moyenne</div><div class="stat-value" id="avgCommission">0 FCFA</div></div>
-                <div class="stat-card"><div>🏆 Meilleur Agent</div><div class="stat-value" id="topAgent" style="font-size: 1rem;">-</div></div>
+                <div class="stat-card"><div>🏆 Meilleur Agent</div><div class="stat-value" id="topAgent" style="font-size: 0.9rem;">-</div></div>
             </div>
         </div>
         
-        <!-- Graphiques Statistiques -->
+        <!-- Graphiques -->
         <div class="charts-row">
-            <div class="chart-card"><h3><i class="fas fa-chart-line"></i> Évolution Mensuelle des Commissions</h3><canvas id="monthlyChart"></canvas></div>
+            <div class="chart-card"><h3><i class="fas fa-chart-line"></i> Évolution Mensuelle</h3><canvas id="monthlyChart"></canvas></div>
             <div class="chart-card"><h3><i class="fas fa-chart-pie"></i> Répartition par Agent</h3><canvas id="agentPieChart"></canvas></div>
             <div class="chart-card"><h3><i class="fas fa-chart-bar"></i> Top 5 Agents</h3><canvas id="topAgentsBarChart"></canvas></div>
         </div>
         
         <div class="dashboard-content">
-            <!-- Formulaire principal -->
             <div class="card">
                 <div class="tabs">
                     <button class="tab active" data-tab="client-tab">📝 Nouveau Client</button>
@@ -204,26 +225,22 @@
                 
                 <div class="tab-content" id="agent-tab">
                     <form id="agentForm"><div class="row"><div class="form-group"><label>Nom complet</label><input type="text" id="newAgentNom" required></div><div class="form-group"><label>ID Agent</label><input type="text" id="newAgentId" required placeholder="ESODI-AG-XXX"></div></div><div class="row"><div class="form-group"><label>WhatsApp</label><input type="text" id="newAgentWhatsApp" required></div><div class="form-group"><label>Email</label><input type="email" id="newAgentEmail"></div></div><div class="btn-group"><button type="submit" class="btn btn-success"><i class="fas fa-user-plus"></i> Ajouter</button><button type="button" class="btn btn-info" id="resetAgentForm"><i class="fas fa-sync"></i> Nouveau</button></div></form>
+                    <div class="section-title" style="margin-top: 1rem;"><i class="fas fa-list"></i> Liste des agents</div>
+                    <div id="agentsListCompact" style="max-height: 300px; overflow-y: auto;"></div>
                 </div>
                 
                 <div class="tab-content" id="stats-tab">
                     <div class="section-title"><i class="fas fa-chart-simple"></i> Analyses Statistiques</div>
-                    <div id="statsAnalysis" style="font-size: 0.85rem;">
-                        <p><strong>📈 Performance globale</strong></p>
-                        <div id="detailedStats"></div>
-                        <p style="margin-top: 1rem;"><strong>🏅 Classement des agents</strong></p>
-                        <div id="agentRanking"></div>
-                    </div>
+                    <div id="statsAnalysis" style="font-size: 0.85rem;"><div id="detailedStats"></div><p style="margin-top: 1rem;"><strong>🏅 Classement des agents</strong></p><div id="agentRanking"></div></div>
                 </div>
                 
                 <div class="filters-section"><h4><i class="fas fa-filter"></i> Filtres</h4><div class="filters-row"><select id="filterAgent"><option value="all">Tous les agents</option></select><select id="filterMonth"><option value="all">Tous les mois</option><option value="0">Janvier</option><option value="1">Février</option><option value="2">Mars</option><option value="3">Avril</option><option value="4">Mai</option><option value="5">Juin</option><option value="6">Juillet</option><option value="7">Août</option><option value="8">Septembre</option><option value="9">Octobre</option><option value="10">Novembre</option><option value="11">Décembre</option></select></div><button class="btn btn-danger btn-sm" id="printReportBtn" style="width:100%; margin-top:0.8rem;"><i class="fas fa-print"></i> Imprimer rapport</button></div>
                 <div class="print-section" id="printSection"><div class="print-header"><h2>Rapport ESODI - Togo</h2><p id="printDate"></p><p id="printAgent"></p><p id="printPeriod"></p></div><h3>Clients</h3><table class="print-table" id="printClientsTable"><thead><tr><th>Client</th><th>Établissement</th><th>Service</th><th>Montant</th><th>Commission</th><th>Date</th><th>Agent</th></tr></thead><tbody></tbody></table><h3>Commissions par Agent</h3><table class="print-table" id="printCommissionsTable"><thead><tr><th>Agent</th><th>Nb Clients</th><th>Total Commission</th><th>Moyenne</th></tr></thead><tbody></tbody></table><div class="btn-group"><button class="btn btn-warning btn-sm" onclick="window.print()"><i class="fas fa-print"></i> Imprimer</button><button class="btn btn-primary btn-sm" onclick="closePrintSection()"><i class="fas fa-times"></i> Fermer</button></div></div>
             </div>
             
-            <!-- Sidebar -->
             <div class="lists-container">
-                <div class="list-card"><div class="section-title"><i class="fas fa-user-tie"></i> Agents Actifs</div><div id="agentsList"><div class="empty-state">Aucun agent</div></div></div>
-                <div class="list-card"><div class="section-title"><i class="fas fa-users"></i> Clients Récents</div><div id="clientsList"><div class="empty-state">Aucun client</div></div></div>
+                <div class="list-card"><div class="section-title"><i class="fas fa-user-tie"></i> Agents Actifs <i class="fas fa-trash-alt" style="color: var(--danger-color); font-size: 0.8rem;"></i></div><div id="agentsList"><div class="empty-state">Aucun agent</div></div></div>
+                <div class="list-card"><div class="section-title"><i class="fas fa-users"></i> Clients Récents <i class="fas fa-trash-alt" style="color: var(--danger-color); font-size: 0.8rem;"></i></div><div id="clientsList"><div class="empty-state">Aucun client</div></div></div>
                 <div class="list-card"><div class="section-title"><i class="fas fa-money-bill-wave"></i> Dernières Commissions</div><div id="commissionsList"><div class="empty-state">Aucune commission</div></div></div>
             </div>
         </div>
@@ -232,20 +249,19 @@
     <div class="auto-save-indicator" id="autoSaveIndicator"><i class="fas fa-check-circle"></i> Sauvegarde auto</div>
 
     <script>
-        // Données
         const LOGIN = { username: "KOLA", password: "KOLA1@" };
         let agents = JSON.parse(localStorage.getItem('esodi_admin_agents_full')) || [
             { id: "ESODI-AG-001", nom: "Koffi Mensah", whatsapp: "+229 67 45 32 10", email: "k.mensah@esodi.bj", dateCreation: new Date().toISOString(), statut: "actif" },
-            { id: "ESODI-AG-002", nom: "Aïcha Bello", whatsapp: "+229 61 23 45 67", email: "a.bello@esodi.bj", dateCreation: new Date().toISOString(), statut: "actif" },
-            { id: "ESODI-AG-003", nom: "Komla Adjei", whatsapp: "+229 90 12 34 56", email: "k.adjei@esodi.bj", dateCreation: new Date().toISOString(), statut: "actif" }
+            { id: "ESODI-AG-002", nom: "Aïcha Bello", whatsapp: "+229 61 23 45 67", email: "a.bello@esodi.bj", dateCreation: new Date().toISOString(), statut: "actif" }
         ];
         let clients = JSON.parse(localStorage.getItem('esodi_admin_clients_full')) || [];
         let commissions = JSON.parse(localStorage.getItem('esodi_admin_commissions_full')) || [];
         
         let monthlyChart, agentPieChart, topAgentsBarChart;
+        let pendingDelete = { type: null, id: null, name: null };
         
-        // Auth
         if (localStorage.getItem('esodi_admin_auth_full')) showDashboard();
+        
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
             if (document.getElementById('username').value === LOGIN.username && document.getElementById('password').value === LOGIN.password) {
@@ -262,13 +278,54 @@
             initApp();
         }
         
-        function initApp() {
+        function saveData() {
+            localStorage.setItem('esodi_admin_agents_full', JSON.stringify(agents));
+            localStorage.setItem('esodi_admin_clients_full', JSON.stringify(clients));
+            localStorage.setItem('esodi_admin_commissions_full', JSON.stringify(commissions));
+        }
+        
+        function deleteAgent(id, name) {
+            if (clients.some(c => c.agentId === id)) {
+                alert(`Impossible de supprimer l'agent ${name} car il a des clients associés. Supprimez d'abord ses clients.`);
+                return false;
+            }
+            agents = agents.filter(a => a.id !== id);
+            commissions = commissions.filter(c => c.agentId !== id);
+            saveData();
+            updateAll();
+            return true;
+        }
+        
+        function deleteClient(id, name) {
+            clients = clients.filter(c => c.id !== id);
+            commissions = commissions.filter(c => c.clientId !== id);
+            saveData();
+            updateAll();
+            return true;
+        }
+        
+        function showConfirmModal(type, id, name) {
+            pendingDelete = { type, id, name };
+            document.getElementById('modalTitle').textContent = type === 'agent' ? 'Supprimer l\'agent' : 'Supprimer le client';
+            document.getElementById('modalMessage').textContent = `Êtes-vous sûr de vouloir supprimer ${name} ? Cette action est irréversible.`;
+            document.getElementById('confirmModal').style.display = 'flex';
+        }
+        
+        document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
+            if (pendingDelete.type === 'agent') deleteAgent(pendingDelete.id, pendingDelete.name);
+            else if (pendingDelete.type === 'client') deleteClient(pendingDelete.id, pendingDelete.name);
+            document.getElementById('confirmModal').style.display = 'none';
+            pendingDelete = { type: null, id: null, name: null };
+        });
+        document.getElementById('cancelDeleteBtn').addEventListener('click', () => {
+            document.getElementById('confirmModal').style.display = 'none';
+            pendingDelete = { type: null, id: null, name: null };
+        });
+        
+        function updateAll() {
             updateSelects();
             updateLists();
             updateStatsAndCharts();
-            setupEvents();
-            setupAutoSave();
-            loadAutoSave();
         }
         
         function updateSelects() {
@@ -280,12 +337,28 @@
         }
         
         function updateLists() {
-            // Agents list
+            // Agents list with delete button
             const agentsDiv = document.getElementById('agentsList');
-            if (agents.length === 0) agentsDiv.innerHTML = '<div class="empty-state">Aucun agent</div>';
-            else agentsDiv.innerHTML = agents.filter(a => a.statut === 'actif').map(a => `<div class="list-item agent"><div class="item-title">${escapeHtml(a.nom)}</div><div class="item-details">ID: ${a.id}<br>WhatsApp: ${a.whatsapp}<br>Clients: ${clients.filter(c => c.agentId === a.id).length}<br>Commission: ${commissions.filter(c => c.agentId === a.id).reduce((s,c)=>s+c.commission,0).toLocaleString('fr-FR')} FCFA</div></div>`).join('');
+            const agentsCompact = document.getElementById('agentsListCompact');
+            if (agents.length === 0) {
+                agentsDiv.innerHTML = '<div class="empty-state">Aucun agent</div>';
+                if (agentsCompact) agentsCompact.innerHTML = '<div class="empty-state">Aucun agent</div>';
+            } else {
+                agentsDiv.innerHTML = agents.filter(a => a.statut === 'actif').map(a => `
+                    <div class="list-item agent">
+                        <div class="item-title"><span>${escapeHtml(a.nom)}</span><button class="delete-btn" onclick="showConfirmModal('agent','${a.id}','${escapeHtml(a.nom)}')"><i class="fas fa-trash"></i> Supprimer</button></div>
+                        <div class="item-details">ID: ${a.id}<br>WhatsApp: ${a.whatsapp}<br>Clients: ${clients.filter(c => c.agentId === a.id).length}<br>Commission: ${commissions.filter(c => c.agentId === a.id).reduce((s,c)=>s+c.commission,0).toLocaleString('fr-FR')} FCFA</div>
+                    </div>
+                `).join('');
+                if (agentsCompact) {
+                    agentsCompact.innerHTML = agents.filter(a => a.statut === 'actif').map(a => `
+                        <div class="list-item agent" style="margin-bottom: 0.5rem;">
+                            <div class="item-title"><span>${escapeHtml(a.nom)} (${a.id})</span><button class="delete-btn" onclick="showConfirmModal('agent','${a.id}','${escapeHtml(a.nom)}')"><i class="fas fa-trash"></i></button></div>
+                        </div>
+                    `).join('');
+                }
+            }
             
-            // Filter for display
             let filteredClients = [...clients];
             const agentFilter = document.getElementById('filterAgent').value;
             const monthFilter = document.getElementById('filterMonth').value;
@@ -295,7 +368,12 @@
             
             const clientsDiv = document.getElementById('clientsList');
             if (filteredClients.length === 0) clientsDiv.innerHTML = '<div class="empty-state">Aucun client</div>';
-            else clientsDiv.innerHTML = filteredClients.slice(0,5).map(c => `<div class="list-item"><div class="item-title">${escapeHtml(c.client.prenom)} ${escapeHtml(c.client.nom)}</div><div class="item-details">Établissement: ${escapeHtml(c.client.etablissement)}<br>Service: ${c.service.type}<br>Montant: ${c.service.prix.toLocaleString('fr-FR')} FCFA<br>Commission: ${c.service.commission.toLocaleString('fr-FR')} FCFA<br>Agent: ${c.agentNom}</div></div>`).join('');
+            else clientsDiv.innerHTML = filteredClients.slice(0,10).map(c => `
+                <div class="list-item">
+                    <div class="item-title"><span>${escapeHtml(c.client.prenom)} ${escapeHtml(c.client.nom)}</span><button class="delete-btn" onclick="showConfirmModal('client','${c.id}','${escapeHtml(c.client.prenom)} ${escapeHtml(c.client.nom)}')"><i class="fas fa-trash"></i> Supprimer</button></div>
+                    <div class="item-details">Établissement: ${escapeHtml(c.client.etablissement)}<br>Service: ${c.service.type}<br>Montant: ${c.service.prix.toLocaleString('fr-FR')} FCFA<br>Commission: ${c.service.commission.toLocaleString('fr-FR')} FCFA<br>Agent: ${c.agentNom}</div>
+                </div>
+            `).join('');
             
             let filteredComms = [...commissions];
             if (agentFilter !== 'all') filteredComms = filteredComms.filter(c => c.agentId === agentFilter);
@@ -312,7 +390,6 @@
             const monthlyComm = commissions.filter(c => new Date(c.date).getMonth() === now.getMonth() && new Date(c.date).getFullYear() === now.getFullYear()).reduce((s,c) => s + c.commission, 0);
             const avgComm = commissions.length ? totalComm / commissions.length : 0;
             
-            // Top agent
             const agentTotals = {};
             commissions.forEach(c => { if (!agentTotals[c.agent]) agentTotals[c.agent] = 0; agentTotals[c.agent] += c.commission; });
             let topAgentName = '-', topAgentValue = 0;
@@ -323,15 +400,13 @@
             document.getElementById('totalCommission').textContent = totalComm.toLocaleString('fr-FR') + ' FCFA';
             document.getElementById('monthlyCommission').textContent = monthlyComm.toLocaleString('fr-FR') + ' FCFA';
             document.getElementById('avgCommission').textContent = avgComm.toLocaleString('fr-FR') + ' FCFA';
-            document.getElementById('topAgent').textContent = topAgentName !== '-' ? `${topAgentName} (${topAgentValue.toLocaleString('fr-FR')} FCFA)` : '-';
+            document.getElementById('topAgent').textContent = topAgentName !== '-' ? `${topAgentName.substring(0,15)}... (${topAgentValue.toLocaleString('fr-FR')})` : '-';
             
-            // Graphique mensuel
             const monthlyData = Array(12).fill(0);
             commissions.forEach(c => { const month = new Date(c.date).getMonth(); monthlyData[month] += c.commission; });
             if (monthlyChart) monthlyChart.destroy();
             monthlyChart = new Chart(document.getElementById('monthlyChart'), { type: 'line', data: { labels: ['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Aoû','Sep','Oct','Nov','Déc'], datasets: [{ label: 'Commission (FCFA)', data: monthlyData, borderColor: '#8b5cf6', backgroundColor: 'rgba(139,92,246,0.1)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: true } });
             
-            // Pie chart par agent
             const agentCommMap = {};
             commissions.forEach(c => { agentCommMap[c.agent] = (agentCommMap[c.agent] || 0) + c.commission; });
             const pieLabels = Object.keys(agentCommMap).slice(0,5);
@@ -339,19 +414,11 @@
             if (agentPieChart) agentPieChart.destroy();
             agentPieChart = new Chart(document.getElementById('agentPieChart'), { type: 'pie', data: { labels: pieLabels, datasets: [{ data: pieData, backgroundColor: ['#2563eb','#10b981','#f59e0b','#ef4444','#8b5cf6'] }] }, options: { responsive: true } });
             
-            // Top 5 bar chart
             const sorted = Object.entries(agentCommMap).sort((a,b) => b[1] - a[1]).slice(0,5);
             if (topAgentsBarChart) topAgentsBarChart.destroy();
-            topAgentsBarChart = new Chart(document.getElementById('topAgentsBarChart'), { type: 'bar', data: { labels: sorted.map(s => s[0]), datasets: [{ label: 'Commission (FCFA)', data: sorted.map(s => s[1]), backgroundColor: '#f59e0b' }] }, options: { responsive: true } });
+            topAgentsBarChart = new Chart(document.getElementById('topAgentsBarChart'), { type: 'bar', data: { labels: sorted.map(s => s[0].length > 15 ? s[0].substring(0,12)+'...' : s[0]), datasets: [{ label: 'Commission (FCFA)', data: sorted.map(s => s[1]), backgroundColor: '#f59e0b' }] }, options: { responsive: true } });
             
-            // Statistiques détaillées
-            const totalServices = clients.length;
-            const serviceDistribution = {};
-            clients.forEach(c => { serviceDistribution[c.service.type] = (serviceDistribution[c.service.type] || 0) + 1; });
-            const topService = Object.entries(serviceDistribution).sort((a,b) => b[1] - a[1])[0];
-            const regionDistribution = {};
-            clients.forEach(c => { const agent = agents.find(a => a.id === c.agentId); if (agent) regionDistribution[agent.region || 'Non défini'] = (regionDistribution[agent.region || 'Non défini'] || 0) + 1; });
-            
+            const topService = clients.length ? Object.entries(clients.reduce((acc,c) => { acc[c.service.type] = (acc[c.service.type] || 0) + 1; return acc; }, {})).sort((a,b) => b[1] - a[1])[0] : null;
             document.getElementById('detailedStats').innerHTML = `
                 <div class="stats-grid" style="grid-template-columns: repeat(2,1fr); margin-top: 0.5rem;">
                     <div class="stat-card" style="background:#f1f5f9;"><div>📊 CA Total</div><div class="stat-value" style="font-size:1rem;">${clients.reduce((s,c)=>s+c.service.prix,0).toLocaleString('fr-FR')} FCFA</div></div>
@@ -360,7 +427,6 @@
                     <div class="stat-card" style="background:#f1f5f9;"><div>📈 Meilleur mois</div><div class="stat-value" style="font-size:1rem;">${['Jan','Fév','Mar','Avr','Mai','Juin','Juil','Aoû','Sep','Oct','Nov','Déc'][monthlyData.indexOf(Math.max(...monthlyData))] || '-'}</div></div>
                 </div>
             `;
-            
             const ranking = Object.entries(agentCommMap).sort((a,b) => b[1] - a[1]).map(([agent, comm], idx) => `<div style="display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid #e2e8f0;"><span>${idx+1}. ${agent}</span><span style="font-weight: bold;">${comm.toLocaleString('fr-FR')} FCFA</span></div>`).join('');
             document.getElementById('agentRanking').innerHTML = ranking || '<p>Aucune donnée</p>';
         }
@@ -369,9 +435,8 @@
             const agent = { id: document.getElementById('newAgentId').value, nom: document.getElementById('newAgentNom').value, whatsapp: document.getElementById('newAgentWhatsApp').value, email: document.getElementById('newAgentEmail').value, dateCreation: new Date().toISOString(), statut: 'actif' };
             if (agents.find(a => a.id === agent.id)) { alert('ID déjà existant!'); return; }
             agents.push(agent);
-            localStorage.setItem('esodi_admin_agents_full', JSON.stringify(agents));
-            updateSelects();
-            updateLists();
+            saveData();
+            updateAll();
             document.getElementById('agentForm').reset();
             alert(`Agent ${agent.nom} ajouté`);
         }
@@ -390,11 +455,9 @@
                 dateEnregistrement: new Date().toISOString(), statut: 'actif'
             };
             clients.push(client);
-            localStorage.setItem('esodi_admin_clients_full', JSON.stringify(clients));
             commissions.push({ id: Date.now(), clientId: client.id, agentId, clientNom: `${client.client.prenom} ${client.client.nom}`, serviceType: client.service.type, montantService: prix, commission, date: client.dateEnregistrement, agent: agent.nom });
-            localStorage.setItem('esodi_admin_commissions_full', JSON.stringify(commissions));
-            updateLists();
-            updateStatsAndCharts();
+            saveData();
+            updateAll();
             document.getElementById('newClientBtn').click();
             alert(`Client enregistré! Commission: ${commission.toLocaleString('fr-FR')} FCFA`);
         }
@@ -409,7 +472,8 @@
             document.getElementById('filterAgent').addEventListener('change', () => { updateLists(); updateStatsAndCharts(); });
             document.getElementById('filterMonth').addEventListener('change', () => { updateLists(); updateStatsAndCharts(); });
             document.getElementById('printReportBtn').addEventListener('click', generatePrintReport);
-            document.querySelectorAll('.tab').forEach(tab => { tab.addEventListener('click', function() { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active')); this.classList.add('active'); document.getElementById(this.getAttribute('data-tab')).classList.add('active'); }); });
+            document.querySelectorAll('.tab').forEach(tab => { tab.addEventListener('click', function() { document.querySelectorAll('.tab').forEach(t => t.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active')); this.classList.add('active'); document.getElementById(this.getAttribute('data-tab')).classList.add('active'); if (this.getAttribute('data-tab') === 'agent-tab') updateLists(); }); });
+            setInterval(() => { const ind = document.getElementById('autoSaveIndicator'); ind.style.display = 'flex'; setTimeout(() => ind.style.display = 'none', 2000); }, 60000);
         }
         
         function generatePrintReport() {
@@ -430,21 +494,18 @@
             filtered.forEach(c => { if (!summary[c.agentNom]) summary[c.agentNom] = { count: 0, total: 0 }; summary[c.agentNom].count++; summary[c.agentNom].total += c.service.commission; });
             const commTbody = document.querySelector('#printCommissionsTable tbody');
             commTbody.innerHTML = '';
-            Object.keys(summary).forEach(agent => { const avg = summary[agent].total / summary[agent].count; commTbody.innerHTML += `<tr><td>${agent}</td><td>${summary[agent].count}</td><td>${summary[agent].total.toLocaleString('fr-FR')} FCFA</td><td>${avg.toLocaleString('fr-FR')} FCFA</td></tr>`; });
+            Object.keys(summary).forEach(agent => { const avg = summary[agent].total / summary[agent].count; commTbody.innerHTML += `<tr><td>${agent}</td><td>${summary[agent].count}</td><td>${summary[agent].total.toLocaleString('fr-FR')} FCFA</td><td>${avg.toLocaleString('fr-FR')} FCFA</td>`; });
             document.getElementById('printSection').style.display = 'block';
         }
         
         window.closePrintSection = () => document.getElementById('printSection').style.display = 'none';
+        window.showConfirmModal = showConfirmModal;
         
-        function setupAutoSave() {
-            setInterval(() => {
-                const data = { agentSelect: document.getElementById('agentSelect').value, clientNom: document.getElementById('clientNom').value, clientPrenom: document.getElementById('clientPrenom').value, clientWhatsApp: document.getElementById('clientWhatsApp').value, clientEmail: document.getElementById('clientEmail').value, clientEtablissement: document.getElementById('clientEtablissement').value, clientAdresse: document.getElementById('clientAdresse').value, serviceType: document.getElementById('serviceType').value, servicePrix: document.getElementById('servicePrix').value, serviceDescription: document.getElementById('serviceDescription').value, latitude: document.getElementById('latitude').value, longitude: document.getElementById('longitude').value };
-                localStorage.setItem('esodi_admin_auto_save_full', JSON.stringify(data));
-                const ind = document.getElementById('autoSaveIndicator'); ind.style.display = 'flex'; setTimeout(() => ind.style.display = 'none', 2000);
-            }, 30000);
-        }
-        
-        function loadAutoSave() {
+        function initApp() {
+            updateSelects();
+            updateLists();
+            updateStatsAndCharts();
+            setupEvents();
             const saved = localStorage.getItem('esodi_admin_auto_save_full');
             if (saved) { const data = JSON.parse(saved); Object.keys(data).forEach(k => { const el = document.getElementById(k); if (el) el.value = data[k]; }); }
         }
