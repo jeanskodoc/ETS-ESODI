@@ -19,7 +19,6 @@
             --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
             --shadow-heavy: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
             --radius: 1rem;
-            /* Couleurs du Togo */
             --togo-green: #006B3F;
             --togo-yellow: #FFD700;
             --togo-red: #C8102E;
@@ -48,7 +47,7 @@
             max-width: 450px;
         }
         
-        /* ===== LOGIN CARD AVEC DRAPEAU ===== */
+        /* LOGIN CARD */
         .login-container {
             background-color: white;
             padding: clamp(1.5rem, 5vw, 2rem) clamp(1.2rem, 4vw, 1.8rem);
@@ -78,7 +77,6 @@
             flex-wrap: wrap;
         }
         
-        /* Drapeau Togo stylisé */
         .togo-flag-logo {
             display: inline-flex;
             flex-direction: column;
@@ -171,7 +169,7 @@
             pointer-events: none;
         }
         
-        input {
+        input, select, textarea {
             width: 100%;
             padding: 0.75rem 0.9rem 0.75rem 38px;
             border: 1px solid #e2e8f0;
@@ -181,7 +179,12 @@
             background: white;
         }
         
-        input:focus {
+        textarea {
+            padding-left: 38px;
+            resize: vertical;
+        }
+        
+        input:focus, select:focus, textarea:focus {
             border-color: var(--secondary-color);
             outline: none;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
@@ -223,7 +226,7 @@
             border-left: 3px solid var(--accent-color);
         }
         
-        /* ===== DASHBOARD ===== */
+        /* DASHBOARD */
         .dashboard {
             display: none;
             width: 100%;
@@ -364,6 +367,60 @@
             gap: 0.5rem;
         }
         
+        /* Message sauvegarde automatique */
+        .auto-save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 1000;
+            box-shadow: var(--shadow-medium);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .auto-save-indicator.show {
+            opacity: 1;
+        }
+        
+        /* Bouton Nouveau Client */
+        .new-client-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        
+        .btn-new-client {
+            background: linear-gradient(105deg, var(--success-color), #059669);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+        
+        .btn-new-client:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.3);
+        }
+        
         .filter-select {
             width: 100%;
             padding: 0.6rem;
@@ -476,15 +533,6 @@
             margin-top: 1rem;
         }
         
-        textarea {
-            width: 100%;
-            padding: 0.6rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.6rem;
-            font-size: 0.85rem;
-            resize: vertical;
-        }
-        
         /* RESPONSIVE */
         @media (min-width: 768px) {
             .dashboard-content {
@@ -506,12 +554,6 @@
         
         @media (prefers-reduced-motion: reduce) {
             * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-            .login-btn:hover, .logout-btn:hover, .gps-btn:hover { transform: none; }
-        }
-        
-        .login-btn:focus-visible, .logout-btn:focus-visible, .gps-btn:focus-visible {
-            outline: 2px solid var(--accent-color);
-            outline-offset: 2px;
         }
         
         .clients-list::-webkit-scrollbar {
@@ -528,6 +570,11 @@
     </style>
 </head>
 <body>
+    <!-- Indicateur de sauvegarde auto -->
+    <div class="auto-save-indicator" id="autoSaveIndicator">
+        <i class="fas fa-save"></i> Sauvegarde auto...
+    </div>
+    
     <!-- Écran de connexion -->
     <div class="container" id="loginContainer">
         <div class="login-container">
@@ -612,27 +659,32 @@
         
         <div class="dashboard-content">
             <div class="form-container">
-                <h2 class="section-title">
-                    <i class="fas fa-user-plus"></i> Nouveau Client
-                </h2>
+                <div class="new-client-header">
+                    <h2 class="section-title" style="margin-bottom: 0;">
+                        <i class="fas fa-user-plus"></i> Nouveau Client
+                    </h2>
+                    <button type="button" class="btn-new-client" id="clearFormBtn">
+                        <i class="fas fa-plus-circle"></i> Nouveau client
+                    </button>
+                </div>
                 
                 <form id="clientForm">
                     <div class="form-group">
-                        <label for="clientNom">Nom</label>
+                        <label for="clientNom">Nom *</label>
                         <div class="input-icon">
                             <i class="fas fa-user"></i>
                             <input type="text" id="clientNom" required placeholder="Nom du client">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="clientPrenom">Prénom</label>
+                        <label for="clientPrenom">Prénom *</label>
                         <div class="input-icon">
                             <i class="fas fa-user"></i>
                             <input type="text" id="clientPrenom" required placeholder="Prénom">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="clientWhatsApp">WhatsApp</label>
+                        <label for="clientWhatsApp">WhatsApp *</label>
                         <div class="input-icon">
                             <i class="fab fa-whatsapp"></i>
                             <input type="text" id="clientWhatsApp" required placeholder="+228 XX XX XX XX">
@@ -646,7 +698,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="clientEtablissement">Établissement</label>
+                        <label for="clientEtablissement">Établissement *</label>
                         <div class="input-icon">
                             <i class="fas fa-building"></i>
                             <input type="text" id="clientEtablissement" required placeholder="Nom de l'établissement">
@@ -660,7 +712,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="clientService">Service offert</label>
+                        <label for="clientService">Service offert *</label>
                         <div class="input-icon">
                             <i class="fas fa-cogs"></i>
                             <select id="clientService" required>
@@ -735,6 +787,7 @@
     </div>
 
     <script>
+        // Agents
         const agents = [
             { username: "agent1", password: "esodi2024", name: "Koffi Mensah" },
             { username: "agent2", password: "esodi2024", name: "Aïcha Bello" },
@@ -742,7 +795,10 @@
         ];
         
         let clients = JSON.parse(localStorage.getItem('esodi_clients')) || [];
+        let autoSaveTimer = null;
+        let currentUser = JSON.parse(localStorage.getItem('esodi_current_user'));
         
+        // DOM Elements
         const loginContainer = document.getElementById('loginContainer');
         const dashboard = document.getElementById('dashboard');
         const loginForm = document.getElementById('loginForm');
@@ -760,10 +816,140 @@
         const latitudeInput = document.getElementById('latitude');
         const longitudeInput = document.getElementById('longitude');
         const sendWhatsAppBtn = document.getElementById('sendWhatsAppBtn');
+        const clearFormBtn = document.getElementById('clearFormBtn');
+        const autoSaveIndicator = document.getElementById('autoSaveIndicator');
         
         const ESODI_WHATSAPP = "92871605";
-        let currentUser = JSON.parse(localStorage.getItem('esodi_current_user'));
         
+        // Afficher l'indicateur de sauvegarde
+        function showAutoSaveMessage() {
+            autoSaveIndicator.classList.add('show');
+            setTimeout(() => {
+                autoSaveIndicator.classList.remove('show');
+            }, 1500);
+        }
+        
+        // Sauvegarde automatique du formulaire en cours
+        function autoSaveForm() {
+            const formData = {
+                nom: document.getElementById('clientNom').value,
+                prenom: document.getElementById('clientPrenom').value,
+                whatsapp: document.getElementById('clientWhatsApp').value,
+                email: document.getElementById('clientEmail').value,
+                etablissement: document.getElementById('clientEtablissement').value,
+                adresse: document.getElementById('clientAdresse').value,
+                service: document.getElementById('clientService').value,
+                latitude: latitudeInput.value,
+                longitude: longitudeInput.value,
+                savedAt: new Date().toISOString()
+            };
+            localStorage.setItem('esodi_draft_client', JSON.stringify(formData));
+            showAutoSaveMessage();
+        }
+        
+        // Restaurer le brouillon sauvegardé
+        function restoreDraft() {
+            const draft = localStorage.getItem('esodi_draft_client');
+            if (draft) {
+                const data = JSON.parse(draft);
+                if (data.nom) document.getElementById('clientNom').value = data.nom;
+                if (data.prenom) document.getElementById('clientPrenom').value = data.prenom;
+                if (data.whatsapp) document.getElementById('clientWhatsApp').value = data.whatsapp;
+                if (data.email) document.getElementById('clientEmail').value = data.email;
+                if (data.etablissement) document.getElementById('clientEtablissement').value = data.etablissement;
+                if (data.adresse) document.getElementById('clientAdresse').value = data.adresse;
+                if (data.service) document.getElementById('clientService').value = data.service;
+                if (data.latitude) latitudeInput.value = data.latitude;
+                if (data.longitude) longitudeInput.value = data.longitude;
+            }
+        }
+        
+        // Effacer le brouillon et réinitialiser le formulaire
+        function clearFormAndDraft() {
+            clientForm.reset();
+            latitudeInput.value = '';
+            longitudeInput.value = '';
+            gpsStatus.innerHTML = 'Cliquez pour les coordonnées GPS';
+            localStorage.removeItem('esodi_draft_client');
+        }
+        
+        // Écouter les changements pour sauvegarde auto
+        function setupAutoSave() {
+            const inputs = ['clientNom', 'clientPrenom', 'clientWhatsApp', 'clientEmail', 'clientEtablissement', 'clientAdresse', 'clientService'];
+            inputs.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', () => {
+                        if (autoSaveTimer) clearTimeout(autoSaveTimer);
+                        autoSaveTimer = setTimeout(autoSaveForm, 800);
+                    });
+                    el.addEventListener('change', () => {
+                        if (autoSaveTimer) clearTimeout(autoSaveTimer);
+                        autoSaveTimer = setTimeout(autoSaveForm, 800);
+                    });
+                }
+            });
+            latitudeInput.addEventListener('change', () => {
+                if (autoSaveTimer) clearTimeout(autoSaveTimer);
+                autoSaveTimer = setTimeout(autoSaveForm, 500);
+            });
+            longitudeInput.addEventListener('change', () => {
+                if (autoSaveTimer) clearTimeout(autoSaveTimer);
+                autoSaveTimer = setTimeout(autoSaveForm, 500);
+            });
+        }
+        
+        // Sauvegarder un client
+        function saveClient(silent = false) {
+            if (!document.getElementById('clientNom').value || !document.getElementById('clientPrenom').value) {
+                alert("Veuillez remplir le nom et prénom du client");
+                return null;
+            }
+            
+            const client = {
+                id: Date.now(),
+                nom: document.getElementById('clientNom').value,
+                prenom: document.getElementById('clientPrenom').value,
+                whatsapp: document.getElementById('clientWhatsApp').value,
+                email: document.getElementById('clientEmail').value,
+                etablissement: document.getElementById('clientEtablissement').value,
+                adresse: document.getElementById('clientAdresse').value,
+                service: document.getElementById('clientService').value,
+                latitude: latitudeInput.value,
+                longitude: longitudeInput.value,
+                date: new Date().toISOString(),
+                agent: currentUser ? currentUser.name : 'Agent'
+            };
+            
+            clients.push(client);
+            localStorage.setItem('esodi_clients', JSON.stringify(clients));
+            updateClientsDisplay();
+            updateStats();
+            
+            if (!silent) {
+                clearFormAndDraft();
+                alert(`Client ${client.prenom} ${client.nom} enregistré avec succès !`);
+            }
+            return client;
+        }
+        
+        // Envoyer par WhatsApp
+        function sendToWhatsApp(client) {
+            const msg = `📋 *NOUVEAU CLIENT ESODI* 📋%0A%0A` +
+                `*👤 Client:* ${client.nom} ${client.prenom}%0A` +
+                `*📱 WhatsApp:* ${client.whatsapp}%0A` +
+                `*📧 Email:* ${client.email || 'Non renseigné'}%0A` +
+                `*🏢 Établissement:* ${client.etablissement}%0A` +
+                `*📍 Adresse:* ${client.adresse || 'Non renseignée'}%0A` +
+                `*🛠️ Service:* ${client.service}%0A` +
+                `*🗺️ GPS:* ${client.latitude && client.longitude ? `${client.latitude}, ${client.longitude}` : 'Non renseignée'}%0A` +
+                `*👨‍💼 Agent:* ${client.agent}%0A` +
+                `*📅 Date:* ${new Date(client.date).toLocaleDateString('fr-FR')}`;
+            window.open(`https://wa.me/${ESODI_WHATSAPP}?text=${msg}`, '_blank');
+            alert(`Données envoyées au ${ESODI_WHATSAPP}`);
+        }
+        
+        // Événements
         if (currentUser) showDashboard(currentUser);
         
         loginForm.addEventListener('submit', function(e) {
@@ -787,6 +973,10 @@
             errorMessage.style.display = 'none';
         });
         
+        clearFormBtn.addEventListener('click', function() {
+            clearFormAndDraft();
+        });
+        
         getLocationBtn.addEventListener('click', function() {
             if (!navigator.geolocation) {
                 gpsStatus.innerHTML = '❌ Géolocalisation non supportée';
@@ -800,6 +990,7 @@
                     longitudeInput.value = pos.coords.longitude.toFixed(6);
                     gpsStatus.innerHTML = '✅ Position obtenue';
                     getLocationBtn.disabled = false;
+                    autoSaveForm();
                 },
                 (err) => {
                     gpsStatus.innerHTML = '❌ Accès à la localisation refusé';
@@ -809,58 +1000,16 @@
             );
         });
         
-        function saveClient(silent = false) {
-            if (!latitudeInput.value || !longitudeInput.value) {
-                if (!confirm("Aucune localisation GPS. Continuer sans ?")) return null;
-            }
-            const client = {
-                id: Date.now(),
-                nom: document.getElementById('clientNom').value,
-                prenom: document.getElementById('clientPrenom').value,
-                whatsapp: document.getElementById('clientWhatsApp').value,
-                email: document.getElementById('clientEmail').value,
-                etablissement: document.getElementById('clientEtablissement').value,
-                adresse: document.getElementById('clientAdresse').value,
-                service: document.getElementById('clientService').value,
-                latitude: latitudeInput.value,
-                longitude: longitudeInput.value,
-                date: new Date().toISOString(),
-                agent: currentUser.name
-            };
-            clients.push(client);
-            localStorage.setItem('esodi_clients', JSON.stringify(clients));
-            updateClientsDisplay();
-            updateStats();
-            if (!silent) {
-                clientForm.reset();
-                latitudeInput.value = '';
-                longitudeInput.value = '';
-                gpsStatus.innerHTML = 'Cliquez pour les coordonnées GPS';
-                alert(`Client ${client.prenom} ${client.nom} enregistré !`);
-            }
-            return client;
-        }
+        clientForm.addEventListener('submit', (e) => { 
+            e.preventDefault(); 
+            saveClient(false); 
+        });
         
-        function sendToWhatsApp(client) {
-            const msg = `📋 *NOUVEAU CLIENT ESODI* 📋%0A%0A` +
-                `*👤 Client:* ${client.nom} ${client.prenom}%0A` +
-                `*📱 WhatsApp:* ${client.whatsapp}%0A` +
-                `*📧 Email:* ${client.email || 'Non renseigné'}%0A` +
-                `*🏢 Établissement:* ${client.etablissement}%0A` +
-                `*📍 Adresse:* ${client.adresse || 'Non renseignée'}%0A` +
-                `*🛠️ Service:* ${client.service}%0A` +
-                `*🗺️ GPS:* ${client.latitude && client.longitude ? `${client.latitude}, ${client.longitude}` : 'Non renseignée'}%0A` +
-                `*👨‍💼 Agent:* ${client.agent}%0A` +
-                `*📅 Date:* ${new Date(client.date).toLocaleDateString('fr-FR')}`;
-            window.open(`https://wa.me/${ESODI_WHATSAPP}?text=${msg}`, '_blank');
-            alert(`Envoyé au ${ESODI_WHATSAPP}`);
-        }
-        
-        clientForm.addEventListener('submit', (e) => { e.preventDefault(); saveClient(); });
         sendWhatsAppBtn.addEventListener('click', () => {
             const client = saveClient(true);
             if (client) sendToWhatsApp(client);
         });
+        
         monthFilter.addEventListener('change', updateClientsDisplay);
         
         function showDashboard(agent) {
@@ -871,6 +1020,8 @@
             updateClientsDisplay();
             updateStats();
             monthFilter.value = new Date().getMonth().toString();
+            restoreDraft();
+            setupAutoSave();
         }
         
         function updateClientsDisplay() {
@@ -883,21 +1034,31 @@
             if (filtered.length) {
                 clientsList.innerHTML = filtered.map(c => `
                     <div class="client-card">
-                        <div class="client-name">${c.prenom} ${c.nom}</div>
+                        <div class="client-name">${escapeHtml(c.prenom)} ${escapeHtml(c.nom)}</div>
                         <div class="client-details">
-                            <div><strong>📌 Établissement:</strong> ${c.etablissement}</div>
-                            <div><strong>🛠️ Service:</strong> ${c.service}</div>
-                            <div><strong>📱 WhatsApp:</strong> ${c.whatsapp}</div>
-                            <div><strong>📍 Adresse:</strong> ${c.adresse || 'Non renseignée'}</div>
+                            <div><strong>📌 Établissement:</strong> ${escapeHtml(c.etablissement)}</div>
+                            <div><strong>🛠️ Service:</strong> ${escapeHtml(c.service)}</div>
+                            <div><strong>📱 WhatsApp:</strong> ${escapeHtml(c.whatsapp)}</div>
+                            <div><strong>📍 Adresse:</strong> ${escapeHtml(c.adresse) || 'Non renseignée'}</div>
                             ${c.latitude && c.longitude ? `<div><strong>🗺️ GPS:</strong> ${c.latitude}, ${c.longitude}</div>` : ''}
                             <div><strong>📅 Date:</strong> ${new Date(c.date).toLocaleDateString('fr-FR')}</div>
-                            <div><strong>👤 Agent:</strong> ${c.agent}</div>
+                            <div><strong>👤 Agent:</strong> ${escapeHtml(c.agent)}</div>
                         </div>
                     </div>
                 `).join('');
             } else {
                 clientsList.innerHTML = `<div class="empty-state"><i class="fas fa-user-friends"></i><p>Aucun client</p></div>`;
             }
+        }
+        
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
         }
         
         function updateStats() {
